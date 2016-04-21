@@ -1,9 +1,0 @@
-% ----------------------------------------------------------------------
-% In this code, the program will read the ping output of the data
-%
-% Written by Tingwu Wang, for his bachelor thesis
-% ----------------------------------------------------------------------
-
-function pingReader(fileDir, numData)
-    
-end
