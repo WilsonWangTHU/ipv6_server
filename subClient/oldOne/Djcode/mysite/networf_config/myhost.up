@@ -1,0 +1,6 @@
+#! /bin/sh
+
+/sbin/ifconfig $dev up
+#/sbin/ip -6 route add ::/0 dev $dev
+/sbin/ip -6 route add ::/0 via f001:ee::1 dev $dev
+

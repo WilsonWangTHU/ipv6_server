@@ -1,0 +1,9 @@
+#! /bin/sh
+
+sudo /sbin/sysctl net.ipv6.conf.all.forwarding=1
+sudo /sbin/sysctl net.ipv4.conf.all.forwarding=1
+#sudo service radvd start
+sudo service apache2 start
+sudo /project/Djcode/mysite/script/boot_tb
+#sudo /project/Djcode/mysite/script/tunnel_check &
+#sudo /project/Djcode/mysite/script/tunnel_state.bk &

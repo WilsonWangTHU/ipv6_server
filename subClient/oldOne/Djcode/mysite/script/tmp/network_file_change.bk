@@ -1,0 +1,80 @@
+#!/usr/bin/python
+#network_file_change
+
+import traceback
+import os
+from user_tunnel_info import *
+from function import *
+
+
+file_path = '/project/Djcode/mysite/networf_config/'
+radvd_file = '/etc/radvd.conf'
+interface_file = '/etc/network/interfaces'
+openvpn_conf_file = '/etc/openvpn/myhost.conf'
+openvpn_file = '/etc/openvpn/myhost.up'
+apache_file = '/etc/apache2/conf.d/wsgi.conf'
+iface1='iface eth0 inet6 static\naddress '
+openvpn='/sbin/ifconfig $dev add '
+apache='Listen %s\nNamevirtualHost *:%s\n\n<virtualhost *:%s>'
+
+def change_file(filename_input,filename_output,line_content,line_num):
+    fp=file(filename_input)
+    lines=[]
+    for line in fp:
+        lines.append(line)
+    fp.close()
+    lines.insert(line_num,line_content+'\n')
+    s=''.join(lines)
+    fp = file(filename_output,'w')
+    fp.write(s)
+    fp.close()
+
+def main():
+    login_flag = read_config('State','if_login')
+    if login_flag==0:
+        return 0
+
+    ipv6_addr = read_config('TunnelInfo','ipv6_addr')
+    ipv6_netmask = read_config('TunnelInfo','ipv6_addr_netmask')
+    ivi_addr = read_config('TunnelInfo','ivi_addr')
+    ivi_addr_port = read_config('TunnelInfo','ivi_addr_port')
+    ivi_netmask = read_config('TunnelInfo','ivi_addr_netmask')
+    ipv4_server = read_config('TunnelInfo','server_ipv4')
+    openvpn_addr = read_config('TunnelInfo','openvpn_interface')
+    openvpn_netmask = read_config('TunnelInfo','openvpn_interface_netmask')
+    openvpn_cn = read_config('TunnelInfo','openvpn_common_name')
+
+    radvd_addr = ipv6_addr+'/'+ipv6_netmask
+    change_file(file_path+'radvd.conf',radvd_file,'\tprefix '+radvd_addr,6)
+    
+    t1 = iface1+ipv6_addr+'\n'+'netmask '+ipv6_netmask+'\n\n'
+    t2 = iface1+ivi_addr+'\n'+'netmask '+ivi_netmask+'\n\n'
+    t_iface = t1+t2
+    change_file(file_path+'interfaces',interface_file,t_iface,10)
+
+    t_apache='Listen %s\nNamevirtualHost *:%s\n\n<virtualhost *:%s>'%(ivi_addr_port,ivi_addr_port,ivi_addr_port)
+    change_file(file_path+'wsgi.conf',apache_file,t_apache,8)
+    
+   
+    tunnel_communicate_download()
+ 
+    t_openvpn = openvpn+openvpn_addr+'/'+openvpn_netmask
+    change_file(file_path+'myhost.up',openvpn_file,t_openvpn,4)
+
+    tt_openvpn = 'remote '+ipv4_server
+    change_file(file_path+'myhost.conf',openvpn_conf_file,tt_openvpn,0)
+    
+    os.system('chmod a+x '+openvpn_file)
+    os.system('tar xzvf /etc/openvpn/key.tar.gz -C /etc/openvpn')
+    os.system('mv /etc/openvpn/keys/%s.crt /etc/openvpn/keys/client.crt'%openvpn_cn)
+    os.system('mv /etc/openvpn/keys/%s.key /etc/openvpn/keys/client.key'%openvpn_cn)
+    return 1
+
+if __name__=='__main__':
+    try:
+        main()
+    except Exception,e:
+        print str(e)
+        traceback.print_exc()
+        os._exit(1)
+

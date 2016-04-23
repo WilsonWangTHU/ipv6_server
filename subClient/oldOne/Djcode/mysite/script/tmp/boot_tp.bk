@@ -1,0 +1,42 @@
+#!/usr/bin/python
+#tb.py
+
+import traceback
+import os
+import time
+from function import *
+from user_tunnel_info import *
+from tunnel_local_manage import *
+from ping_test import*
+
+def main():
+    login_flag = read_config('State','if_login')
+    if login_flag==0:
+        return 0
+    tunnel_type = read_config('State','tunnel_type')
+
+    if tunnel_type==0:
+        return 0
+    if tunnel_type == 1:
+        create_tunnel_A()
+        error = ping_test()
+        if error == 0:
+            delete_tunnel_A()
+            return 0
+    if tunnel_type == 2:
+        create_tunnel_C()
+        time.sleep(30)
+        error = ping_test()
+        if error == 0:
+            delete_tunnel_C()
+            return 0
+    return 1
+
+
+if __name__=='__main__':
+    try:
+         main()
+    except Exception,e:
+         print str(e)
+         traceback.print_exc()
+         os._exit(1)

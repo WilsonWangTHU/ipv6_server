@@ -1,0 +1,17 @@
+#!/usr/bin/python
+
+import traceback
+import os
+import time
+from function import *
+from user_tunnel_info import *
+from tunnel_local_manage import *
+from ping_test import*
+
+mac = get_mac()
+cmd = 'sudo /usr/bin/curl -d type="relbd" -d mac="%s" -u xlat:tub20141008 202.112.35.231:8080/raspberry/ -o error.html'%mac
+os.system(cmd)
+reset_userinfo()
+cmd = 'sudo /home/wtw/Djcode/mysite/script/logout_change_file'
+os.system(cmd)
+os.system("service openvpn stop")
