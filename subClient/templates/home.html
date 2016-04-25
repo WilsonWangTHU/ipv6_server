@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="posts">
+    <section class="post">
+        <header class="post-header">
+            <h2 class="post-title">{{ 'test'}}</h2>
+
+            <p class="post-meta">
+            Time:  <a class="post-author" href="#">{{ 'hhaa'}}</a> <a class="post-category post-category-js" href="#">{{'asdasd'}}</a>
+            </p>
+        </header>
+
+        <div class="post-description">
+            <p>
+            {{ post.content }}
+            </p>
+        </div>
+    </section>
+</div><!-- /.blog-post -->
+{% endblock %}
