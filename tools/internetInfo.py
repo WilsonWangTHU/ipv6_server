@@ -17,6 +17,21 @@ def get_mac_address(iface_name):
     return get_address_info.communicate()[0].lstrip(' ').split(' ')[1]
 
 
+def get_all_global_ip6_address(iface_name):
+    get_address_info = subprocess.Popen(['ip', '-6', 'addr', 'show', iface_name],
+                                        stdout=subprocess.PIPE)
+    get_address_info = subprocess.Popen(['grep', 'global'],
+                                        stdout=subprocess.PIPE,
+                                        stdin=get_address_info.stdout)
+
+    addresses = get_address_info.communicate()[0][:-1].split('\n')
+    num_address = len(addresses)
+    for i_address in xrange(0, num_address):
+        addresses[i_address] = addresses[i_address].lstrip(' ').split(' ')[1]
+
+    return num_address, addresses
+
+
 def get_slaac_ip6_address(iface_name):
     '''
     In this function, try to return the slaac 64 ipv6 address of the subClient.
@@ -24,7 +39,7 @@ def get_slaac_ip6_address(iface_name):
     '''
     get_address_info = subprocess.Popen(['ip', '-6', 'addr', 'show', iface_name],
                                         stdout=subprocess.PIPE)
-    get_address_info = subprocess.Popen(['grep', 'global'],
+    get_address_info = subprocess.Popen(['grep', 'global dynamic'],
                                         stdout=subprocess.PIPE,
                                         stdin=get_address_info.stdout)
 
@@ -47,4 +62,43 @@ def get_slaac_ip6_address(iface_name):
     get_address_info = subprocess.Popen(['grep', matching_address],
                                         stdout=subprocess.PIPE,
                                         stdin=get_address_info.stdout)
-    return get_address_info.communicate()[0].lstrip(' ').split(' ')[1]
+
+    addresses = get_address_info.communicate()[0][:-1].split('\n')
+    num_address = len(addresses)
+    for i_address in xrange(0, num_address):
+        addresses[i_address] = addresses[i_address].lstrip(' ').split(' ')[1]
+
+    return num_address, addresses
+
+
+def get_router_ipv6(ipv6_address, type=1):
+    '''
+    type=1 means that the router is the 64 prefix::1, other type might be possible
+    '''
+
+    # take out possible prefix, and take into consideration of abbreviation
+    ipv6_pure_address = ipv6_address.replace('/64', '')
+    if ipv6_pure_address.find('::') == -1:
+        ipv6prefix = ipv6_pure_address.split(':')
+        return ipv6prefix[0] + ':' + ipv6prefix[1] + ':' + \
+            ipv6prefix[2] + ':' + ipv6prefix[3] + '::1'
+    else:
+        # in the case abbreviation
+        ipv6part = ipv6_pure_address.split('::')
+        ipv6prefix = ipv6part[0].split(':')
+        if len(ipv6prefix) >= 4:  # the prefix is all here
+            return ipv6prefix[0] + ':' + ipv6prefix[1] + ':' + \
+                ipv6prefix[2] + ':' + ipv6prefix[3] + '::1'
+        else:
+            # the address must have all been write out, then just switch
+            # the last 8 xxxx:xxxx:xxxx:xxxx into 0:0:0:1
+            ipvsubfix = ipv6part[1].split(':')
+            if len(ipvsubfix) < 4:
+                return ipv6part[0] + '::1'
+            ipv6_address = ipv6part[0]
+            hiden_prefix = 8 - len(ipv6prefix) - len(ipvsubfix)
+            if hiden_prefix > 0:
+                ipv6_address = ipv6_address + hiden_prefix * ':0'
+            for address_component in ipvsubfix[:len(ipvsubfix) - 4]:
+                ipv6_address = ipv6_address + ':' + address_component
+            return ipv6_address + ':0:0:0:1'
