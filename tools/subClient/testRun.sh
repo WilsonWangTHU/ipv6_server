@@ -1,7 +1,7 @@
 #!/bin/bash
 
 myvar=1
-while [ $myvar -le 10 ]
+while [ $myvar -le 20 ]
 do 
     python testRun.py
     sleep 3

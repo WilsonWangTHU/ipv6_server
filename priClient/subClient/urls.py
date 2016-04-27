@@ -21,8 +21,5 @@ from subClient import views
 urlpatterns = [
     url(r'^admin/', admin.site.urls),  # the default admin page
     url(r'^home/$', views.home),
-    url(r'^record/$', views.record_data),
-    url(r'^serve/now/$', views.serve_data),
-    url(r'^sendHeart/$', views.send_heart),
-    # url(r'^heart/$', views.receive_heart_beat),
+    url(r'^heart/$', views.receive_heart_beat),
 ]
