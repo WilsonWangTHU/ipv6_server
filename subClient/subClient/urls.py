@@ -17,7 +17,9 @@ from django.conf.urls import url
 from django.contrib import admin
 from subClient import views
 
+
 urlpatterns = [
     url(r'^admin/', admin.site.urls),  # the default admin page
     url(r'^home/$', views.home),
+    url(r'^heart/$', views.receive_heart_beat),
 ]
