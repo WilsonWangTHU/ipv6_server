@@ -26,7 +26,7 @@ class short_term_dataset(models.Model):
 
 
 class configuration(models.Model):
-    short_term_sample_period = models.IntegerField()
-    short_term_volumn = models.IntegerField()
+    short_term_sample_period = models.IntegerField(default=60)
+    short_term_volumn = models.IntegerField(default=200)
 
-    heart_beat_sample_period = models.IntegerField()
+    heart_beat_sample_period = models.IntegerField(default=600)
