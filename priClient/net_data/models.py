@@ -22,8 +22,15 @@ class client_info(models.Model):
     global_ipv6_address = models.CharField(max_length=20)
 
     last_active_time = models.DateTimeField(auto_now=True)
-    service_start_time = models.DateTimeField()
+    service_start_time = models.DateTimeField(auto_now_add=True)
+    heart_beat_frequency = models.IntegerField(default=600)
 
     # TODO LIST:
     # permission_granted_time = models.DateTimeField()
-    # heart_beat_frequency = models.FloatField()
+
+
+class wlan_configuration(models.Model):
+    channel = models.IntegerField(default=6)
+    password = models.CharField(max_length=60)
+    dying_time = models.IntegerField(default=30)  # minutes
+    refreshing_client_time = models.IntegerField(default=5)  # minutes

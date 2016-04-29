@@ -1,19 +1,21 @@
 from internetInfo import get_slaac_ip6_address, get_router_ipv6
-from internetInfo import get_all_global_ip6_address
+from internetInfo import get_all_global_ip6_address, get_mac_address
 import urllib2
 import urllib
 
 
-def heart_beat_ipv6(time, iface_name, port_num, target_host=0, test_mode=0):
+def heart_beat_ipv6(heart_beat_time, iface_name, port_num, target_host=0, test_mode=0):
     ''' In this function, we try to send url request to the
     master router. The router's address is deducted from the
     slaac ipv6 address of the current host
 
-    if 'target_host' == 0, then we are using the intranet
-    if 'test_mode' == 1, then we will send the data to the local ipv4 host
+    if 'target_host' == 0, then we are using the target_host's intranet address
+    if 'test_mode' == 1, then we will send the data to the local ipv4 host 127.0.0.1
+    if 'test_mode' == 2, then we will send the data to the local ipv4 host 127.0.0.2
+
+    if the priServer received the data, it returns 'success'
     '''
     try:
-
         # get the communicating address
         num_address, my_address = get_slaac_ip6_address(iface_name)
         find_address_flag = 0
@@ -41,21 +43,24 @@ def heart_beat_ipv6(time, iface_name, port_num, target_host=0, test_mode=0):
             address_data = address_data + address.replace('/64', '') + '\n'
 
         # send the url request (http post request)
-        data = {'data': address_data}
+        data = {'global_ipv6_address ': my_address}
+        data['mac_address'] = get_mac_address(iface_name)
+        data['ipv6_addresses'] = address_data
+        data['heart_beat_frequency'] = heart_beat_time
         data_urlencode = urllib.urlencode(data)
 
-        if test_mode == 1:        
-            requrl = 'https://[' + '127.0.0.1' + ']:' + str(port_num) + '/heart/'
+        if test_mode == 1 or test_mode == 2:
+            requrl = 'https://[' + '127.0.0.' + str(test_mode) + ']:' + str(port_num) + '/heart/'
             req = urllib2.Request(url=requrl, data=data_urlencode)
             res_data = urllib2.urlopen(req)
             res = res_data.read()
             print(res)
         else:
             requrl = 'http://[' + router_address + ']:' + str(port_num) + '/heart/'
-            req = urllib2.Request(url=requrl, data=data_urlencode)            
+            req = urllib2.Request(url=requrl, data=data_urlencode)
             res_data = urllib2.urlopen(req)
-        
-        # TODO deal with the data received
+
+        return res_data.read() == 'success'
     except IndexError:
         print("No mac address or IPv6 address available")
     finally:

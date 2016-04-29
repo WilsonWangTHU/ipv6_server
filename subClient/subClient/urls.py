@@ -25,6 +25,7 @@ urlpatterns = [
     url(r'^serve/now/$', views.serve_data),
     url(r'^serve/short_term/$', views.serve_data),
     url(r'^sendHeart/$', views.send_heart),
+    url(r'^sendHeart/test/$', views.send_heart),
     url(r'^settings/$', views.settings),
     # url(r'^heart/$', views.receive_heart_beat),
 ]

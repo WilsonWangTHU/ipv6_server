@@ -1,14 +1,18 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.http import HttpResponseNotAllowed
-# from utils import subClientHeartbeat
+
 from net_data.models import get_CPU_data
 from net_data.models import configuration, CPU_data
+
+from utils.subClientHeartbeat import heart_beat_ipv6
 import datetime
 
 default_sample_period = 60
 default_sample_volumn = 60
 default_heart_beat_period = 600
+
+heart_beat_port_number = 8000
 
 
 def home(request):
@@ -18,8 +22,34 @@ def home(request):
 def send_heart(request):
     # in this function, the subClient send data to the priClient
     # and return the configuration data, which is the time
+    # from subClientHeartbeat import heart_beat_ipv6
 
-    return HttpResponse(str())
+    data_config = configuration.objects.all()
+
+    # are you first time here? then initialize the configuration
+    if len(data_config) != 1:
+        configuration.objects.all().delete()
+        data_config = \
+            configuration(short_term_sample_period=default_sample_period,
+                          short_term_volumn=default_sample_volumn,
+                          heart_beat_sample_period=default_heart_beat_period)
+        data_config.save()
+    else:
+        data_config = data_config[0]
+
+    if request.get_full_path().find('/test') != -1:
+        # send the request to localhost 127.0.0.2
+        # currently we put the priServer on 127.0.0.2
+        result = heart_beat_ipv6(data_config.heart_beat_sample_period,
+                                 'wlan0', heart_beat_port_number,
+                                 target_host=0, test_mode=2)
+    else:
+        result = heart_beat_ipv6(data_config.heart_beat_sample_period,
+                                 'wlan0', heart_beat_port_number,
+                                 target_host=0, test_mode=0)
+    if result is False:  # retry immediately
+        return HttpResponse('0')
+    return HttpResponse(str(data_config.heart_beat_sample_period))
 
 
 def serve_data(request):
