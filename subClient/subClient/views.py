@@ -42,11 +42,11 @@ def send_heart(request):
         # currently we put the priServer on 127.0.0.2
         result = heart_beat_ipv6(data_config.heart_beat_sample_period,
                                  'wlan0', heart_beat_port_number,
-                                 target_host=0, test_mode=2)
+                                 target_host=1, test_mode=2)
     else:
         result = heart_beat_ipv6(data_config.heart_beat_sample_period,
                                  'wlan0', heart_beat_port_number,
-                                 target_host=0, test_mode=0)
+                                 target_host=1, test_mode=0)
     if result is False:  # retry immediately
         return HttpResponse('0')
     return HttpResponse(str(data_config.heart_beat_sample_period))

@@ -4,14 +4,6 @@ from django.db import models
 # Create your models here.
 
 
-class net_data(models.Model):
-    record_time = models.DateTimeField(auto_now=True)
-    data = models.CharField(max_length=30)
-
-    class Meta:
-        ordering = ['record_time']
-
-
 class ipv6_address(models.Model):
     ipv6_address = models.CharField(max_length=30)
 

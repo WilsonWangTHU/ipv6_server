@@ -23,5 +23,5 @@ while(True):
 
     req = urllib2.Request('http://127.0.0.1:' + str(port_num) + path)
     response = urllib2.urlopen(req)
-    sleep_time = float(response.read()) / 10
+    sleep_time = float(response.read())
     time.sleep(sleep_time)

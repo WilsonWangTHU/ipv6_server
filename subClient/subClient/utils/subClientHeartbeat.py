@@ -22,13 +22,13 @@ def heart_beat_ipv6(heart_beat_time, iface_name, port_num, target_host=0, test_m
         if num_address > 1:  # we have multiple choices
             if target_host == 0:  # we use the subnet 2001::/64 to do this
                 for i_address in my_address:
-                    if i_address.find('2001::') or i_address.find('2001:0:'):
+                    if i_address.find('2001::') != -1 or i_address.find('2001:0:') != -1:
                         my_address = i_address
                         find_address_flag = 1
                         break
-            else:
+            else:  # we use the global address 2001:da8:b100:101d
                 for i_address in my_address:
-                    if i_address.find('2001::') or i_address.find('2001:0:'):
+                    if i_address.find('2001::') != -1 or i_address.find('2001:0:') != -1:
                         continue
                     my_address = i_address  # use the outernet address
                     find_address_flag = 1
@@ -43,14 +43,14 @@ def heart_beat_ipv6(heart_beat_time, iface_name, port_num, target_host=0, test_m
             address_data = address_data + address.replace('/64', '') + '\n'
 
         # send the url request (http post request)
-        data = {'global_ipv6_address ': my_address}
+        data = {'global_ipv6_address': my_address}
         data['mac_address'] = get_mac_address(iface_name)
         data['ipv6_addresses'] = address_data
         data['heart_beat_frequency'] = heart_beat_time
         data_urlencode = urllib.urlencode(data)
 
         if test_mode == 1 or test_mode == 2:
-            requrl = 'https://[' + '127.0.0.' + str(test_mode) + ']:' + str(port_num) + '/heart/'
+            requrl = 'http://' + '127.0.0.' + str(test_mode) + ':' + str(port_num) + '/heart/'
             req = urllib2.Request(url=requrl, data=data_urlencode)
             res_data = urllib2.urlopen(req)
             res = res_data.read()

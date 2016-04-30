@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from django.http import HttpResponseNotAllowed
 from net_data.models import client_info, wlan_configuration
+from net_data.util import create_client_info, delete_client_info, change_client_info
 import datetime
 
 
@@ -24,7 +25,8 @@ def refresh_client_info(request=0):
             client_object.last_active_time
         if delta_time.total_seconds() > configuration.dying_time * 60 \
                 or delta_time.total_seconds() < 0:
-            client_object.delete()
+            delete_client_info(client_object)
+            # client_object.delete()
 
     return HttpResponse(str(configuration.refreshing_client_time))
 
@@ -41,27 +43,27 @@ def home(request):
 def receive_heart_beat(request):
     # it is the test function. return the data of the heart beat
     if request.method != 'POST':
-        return HttpResponseNotAllowed('What are doing? No data?')
+        return HttpResponse('What are doing? No data?')
     try:
         mac_address = request.POST['mac_address']
         ipv6_addresses = request.POST['ipv6_addresses']
         global_ipv6_address = request.POST['global_ipv6_address']
-        heart_beart_frequency = request.POST['heart_beart_frequency']
+        heart_beat_frequency = request.POST['heart_beat_frequency']
+        print(heart_beat_frequency)
     except KeyError:
         return HttpResponseNotAllowed('Wrong format')
 
     # old faces or new one?
     try:
         client = client_info.objects.get(mac_address=mac_address)
-        client.mac_address = mac_address
-        client.ipv6_addresses = mac_address
-        client.global_ipv6_address = global_ipv6_address
-        client.heart_beart_frequency = heart_beart_frequency
-        client.last_active_time = datetime.datetime.now()
+        change_client_info(client,
+                           mac_address=mac_address,
+                           ipv6_addresses=ipv6_addresses,
+                           global_ipv6_address=global_ipv6_address,
+                           heart_beat_frequency=heart_beat_frequency)
     except client_info.DoesNotExist:
-        client = client_info(mac_address=mac_address,
-                             ipv6_addresses=ipv6_addresses,
-                             global_ipv6_address=global_ipv6_address,
-                             heart_beart_frequency=heart_beart_frequency)
-    client.save()
+        create_client_info(mac_address=mac_address,
+                           ipv6_addresses=ipv6_addresses,
+                           global_ipv6_address=global_ipv6_address,
+                           heart_beat_frequency=heart_beat_frequency)
     return HttpResponse('success')
