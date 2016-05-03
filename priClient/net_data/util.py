@@ -1,5 +1,26 @@
 from models import ipv6_address
 from models import client_info
+from models import wlan_configuration
+import os  # to obtain the conf files
+import subprocess
+
+
+def modify_hostapd_conf():
+    configuration = wlan_configuration.objects.all()
+    if len(configuration) == 0:
+        configuration = wlan_configuration()
+        configuration.save()
+    else:
+        configuration = configuration[0]
+
+    base_bir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    template_hostapd = \
+        os.path.join(base_bir, 'hostapd_conf', 'hostapd_template.conf')
+    output_hostapd = \
+        os.path.join(base_bir, 'hostapd_conf', 'hostapd.conf')
+    subprocess.call(["cp", template_hostapd, output_hostapd])
+    subprocess.Popen("echo 'wpa_passphrase=" + configuration.password + "' >>" + output_hostapd, shell=True)
+    subprocess.Popen("echo 'channel=" + str(configuration.channel) + "' >> " + output_hostapd, shell=True)
 
 
 def create_client_info(mac_address, ipv6_addresses,

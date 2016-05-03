@@ -51,7 +51,7 @@ MIDDLEWARE_CLASSES = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'subClient.urls'
+ROOT_URLCONF = 'priClient.urls'
 
 TEMPLATE_DEBUG = True
 
@@ -59,7 +59,7 @@ TEMPLATE_DIRS = (
     os.path.join(BASE_DIR, 'templates'),
 )
 
-WSGI_APPLICATION = 'subClient.wsgi.application'
+WSGI_APPLICATION = 'priClient.wsgi.application'
 
 
 # Database

@@ -23,6 +23,6 @@ class client_info(models.Model):
 
 class wlan_configuration(models.Model):
     channel = models.IntegerField(default=6)
-    password = models.CharField(max_length=60)
+    password = models.CharField(max_length=60, default='1234567890')
     dying_time = models.IntegerField(default=30)  # minutes
     refreshing_client_time = models.IntegerField(default=5)  # minutes
