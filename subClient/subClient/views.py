@@ -133,7 +133,6 @@ def settings(request):
     data_config = configuration.objects.all()
 
     # are you first time here? then initialize the configuration
-    print(len(data_config))
     if len(data_config) != 1:
         configuration.objects.all().delete()
         data_config = \

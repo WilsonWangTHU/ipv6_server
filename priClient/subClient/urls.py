@@ -22,6 +22,6 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),  # the default admin page
     url(r'^home/$', views.home),
     url(r'^heart/$', views.receive_heart_beat),
-    url(r'^settings/$', views.change_and_restart_wlan),
+    url(r'^settings/$', views.settings),
     url(r'^auto_refresh/$', views.refresh_client_info),
 ]
