@@ -3,6 +3,13 @@ from models import client_info
 from models import wlan_configuration
 import os  # to obtain the conf files
 import subprocess
+base_bir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+
+def restart_wlan():
+    subprocess.Popen("sudo killall hostapd", shell=True)
+    subprocess.Popen("hostapd -B" +
+                     os.path.join(base_bir, 'hostapd_conf', 'hostapd.conf'))
 
 
 def modify_hostapd_conf():
@@ -13,7 +20,6 @@ def modify_hostapd_conf():
     else:
         configuration = configuration[0]
 
-    base_bir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     template_hostapd = \
         os.path.join(base_bir, 'hostapd_conf', 'hostapd_template.conf')
     output_hostapd = \

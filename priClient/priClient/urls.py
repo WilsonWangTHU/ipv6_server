@@ -20,8 +20,14 @@ from priClient import views
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),  # the default admin page
-    url(r'^home/$', views.home),
-    url(r'^heart/$', views.receive_heart_beat),
-    url(r'^settings/$', views.settings),
+    url(r'^home/$', views.home),  # the home page, display some basic
+    url(r'^settings/$', views.show_settings),  # in this page, change the settings
+    url(r'^change_settings/$', views.change_settings),  # in this page, change the settings
+    url(r'^users/(\d+)/$', views.show_users),  # in this page, change the settings
+    url(r'^users/$', views.show_users),  # in this page, change the settings
+    # the auto refresh page for priClient itself
     url(r'^auto_refresh/$', views.refresh_client_info),
+    # the heart beat page for subClient
+    url(r'^heart/$', views.receive_heart_beat),
+    url(r'^info/$', views.about),
 ]
