@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.http import HttpResponseNotAllowed
+import simplejson
 
 from net_data.models import get_CPU_data
 from net_data.models import configuration, CPU_data
@@ -16,7 +17,7 @@ heart_beat_port_number = 8000
 
 
 def home(request):
-    return render(request, 'home.html')
+    return render(request, 'index.html')
 
 
 def send_heart(request):
@@ -121,8 +122,20 @@ def record_data(request):
     return HttpResponse(str(data_config.short_term_sample_period))
 
 
-def settings(request):
+def show_settings(request):
     # ssl needed or admin needed
+    data_config = configuration.objects.all()
+
+    # are you first time here? then initialize the configuration
+    if len(data_config) != 1:
+        configuration.objects.all().delete()
+        data_config = configuration()
+    else:
+        data_config = data_config[0]
+
+    return render(request, 'show_settings.html',
+                  {'settings': data_config})
+
     if request.method != 'POST':
         return HttpResponseNotAllowed('Get out')
 
@@ -148,3 +161,57 @@ def settings(request):
     data_config.save()
 
     return HttpResponse('Nice Try!')
+
+
+def change_settings(request):
+    # TODO: ssl needed or admin needed
+    data_config = configuration.objects.all()
+
+    # are you first time here? then initialize the configuration
+    if len(data_config) != 1:
+        configuration.objects.all().delete()
+        data_config = configuration()
+    else:
+        data_config = data_config[0]
+
+    if request.method != 'POST':
+        return render(request, 'show_settings.html',
+                      {'settings': data_config})
+    # the change
+    if 'short_term_sample_period' in request.POST:
+        if request.POST['short_term_sample_period'].isdigit() and request.POST['short_term_sample_period'] != '':
+            data_config.short_term_sample_period = request.POST['short_term_sample_period']
+    if 'short_term_volumn' in request.POST:
+        if request.POST['short_term_volumn'].isdigit() and request.POST['short_term_volumn'] != '':
+            data_config.short_term_volumn = request.POST['short_term_volumn']
+    if 'heart_beat_sample_period' in request.POST:
+        if request.POST['heart_beat_sample_period'].isdigit() and request.POST['heart_beat_sample_period'] != '':
+            data_config.heart_beat_sample_period = request.POST['heart_beat_sample_period']
+
+    data_config.save()
+
+    return render(request, 'show_settings.html',
+                  {'settings': data_config, 'Congrats': 'Successfully Changed The Settings'})
+
+
+def about(request):
+    return render(request, 'info.html')
+
+
+def status(request):
+    # first generate the json data
+    cpu_data_client = CPU_data.objects.order_by('time')
+    time_data = []
+    cpu_data = []
+    for single_data in cpu_data_client:
+        delta_time = single_data.time.replace(tzinfo=None) \
+            - cpu_data_client[0].time.replace(tzinfo=None)
+        time_data.append(delta_time.total_seconds())
+        cpu_data.append(single_data.cpu_unniced_user)
+
+    data = {'time_data': time_data}
+    data['cpu_data'] = cpu_data
+    data['xrange'] = max(data['time_data'])
+    data['yrange'] = max(data['cpu_data'])
+    js_data = simplejson.dumps(data)
+    return render(request, 'status.html', {'js_data': js_data, 'start_time': cpu_data_client[0].time, 'end_time': cpu_data_client[len(cpu_data_client) - 1].time, 'num': len(cpu_data_client)})

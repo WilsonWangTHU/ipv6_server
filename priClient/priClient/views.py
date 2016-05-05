@@ -37,10 +37,7 @@ def change_and_restart_wlan(request=0):
 
 
 def change_settings(request):
-    # ssl needed or admin needed
-    if request.method != 'POST':
-        return HttpResponseNotAllowed('Get out')
-
+    # TODO: ssl needed or admin needed
     data_config = wlan_configuration.objects.all()
 
     # are you first time here? then initialize the configuration
@@ -50,19 +47,28 @@ def change_settings(request):
     else:
         data_config = data_config[0]
 
+    if request.method != 'POST':
+        return render(request, 'show_settings.html',
+                      {'settings': data_config})
+    # the change
     if 'channel' in request.POST:
-        data_config.channel = request.POST['channel']
+        if request.POST['channel'].isdigit() and request.POST['channel'] != '':
+            data_config.channel = request.POST['channel']
     if 'password' in request.POST:
-        data_config.password = request.POST['password']
+        if request.POST['password'].isdigit() and request.POST['password'] != '':
+            data_config.password = request.POST['password']
     if 'dying_time' in request.POST:
-        data_config.dying_time = request.POST['dying_time']
+        if request.POST['dying_time'].isdigit() and request.POST['dying_time'] != '':
+            data_config.dying_time = request.POST['dying_time']
     if 'refreshing_client_time' in request.POST:
-        data_config.refreshing_client_time = \
-            request.POST['refreshing_client_time']
+        if request.POST['refreshing_client_time'].isdigit() and request.POST['refreshing_client_time'] != '':
+            data_config.refreshing_client_time = \
+                request.POST['refreshing_client_time']
 
     data_config.save()
 
-    return HttpResponse('Nice Try!')
+    return render(request, 'show_settings.html',
+                  {'settings': data_config, 'Congrats': 'Successfully Changed The Settings'})
 
 
 def show_settings(request):

@@ -16,7 +16,10 @@ Including another URLconf
 from django.conf.urls import url
 from django.contrib import admin
 from subClient import views
+from django.conf import settings
+from django.conf.urls.static import static
 
+app_name = 'subClient'
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),  # the default admin page
@@ -26,6 +29,10 @@ urlpatterns = [
     url(r'^serve/short_term/$', views.serve_data),
     url(r'^sendHeart/$', views.send_heart),
     url(r'^sendHeart/test/$', views.send_heart),
-    url(r'^settings/$', views.settings),
+    url(r'^change_settings/$', views.change_settings),
     # url(r'^heart/$', views.receive_heart_beat),
-]
+
+    url(r'^settings/$', views.show_settings),  # in this page, change the settings
+    url(r'^info/$', views.about),
+    url(r'^status/$', views.status),
+] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

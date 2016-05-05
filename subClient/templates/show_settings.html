@@ -32,26 +32,26 @@
             <table class="pure-table pure-table-horizontal">
                 <thead>
                     <tr>
-                        <th>Channel</th>
-                        <th>Client Dying Time</th>
-                        <th>Refreshing Client Time</th>
+                        <th>Sample Period</th>
+                        <th>Sample Volum</th>
+                        <th>Heart Beat Frequency</th>
                     </tr>
                 </thead>
 
                 <tbody>
                 <tr>
-                    <td>{{settings.channel}}</td>
-                    <td>{{settings.dying_time}}</td>
-                    <td>{{settings.refreshing_client_time}}</td>
+                    <td>{{settings.short_term_sample_period}}</td>
+                    <td>{{settings.short_term_volumn}}</td>
+                    <td>{{settings.heart_beat_sample_period}}</td>
                 </tr>
                 </tbody>
             </table>
             <br>
             <p>Input the new information if necessary</p>
             <form action="/change_settings/" method="post" style="position:relative;">
-                <p>Channel: <input type="text" name="channel"></p>
-                <p>Dying Time: <input type="text" name="dying_time"></p>
-                <p>Refreshing Time: <input type="text" name="refreshing_client_time"></p>
+                <p>Sample Period: <input type="text" name="short_term_sample_period"></p>
+                <p>Sample Volumn: <input type="text" name="short_term_volumn"></p>
+                <p>Heart Beat Frequency: <input type="text" name="heart_beat_sample_period"></p>
                 <input type="submit" value="Submit" style=''>
             </form>
         </div>

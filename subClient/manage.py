@@ -2,6 +2,9 @@
 import os
 import sys
 
+reload = reload(sys)
+sys.setdefaultencoding('gb18030')
+
 if __name__ == "__main__":
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "subClient.settings")
 

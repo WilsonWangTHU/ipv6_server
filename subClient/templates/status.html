@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<script type="text/javascript">
+// in this function, we plot the 
+
+function draw() {
+    var canvas = document.getElementById("canvas");
+    if (null==canvas || !canvas.getContext) return;
+
+    var axes={}, ctx=canvas.getContext("2d");
+    axes.x0 = .5 + .5*canvas.width;  // x0 pixels from left to x=0
+    axes.y0 = .5 + .5*canvas.height; // y0 pixels from top to y=0
+    axes.scale = 40;                 // 40 pixels from x=0 to x=1
+    axes.doNegativeX = false;
+
+    showAxes(ctx,axes);
+    funGraph(ctx,axes,"rgb(11,153,11)",1); 
+}
+
+function funGraph (ctx,axes,color,thick) {
+    var plot_data = {{js_data|safe}};  // the actual data
+    var margin = 30
+
+    ctx.beginPath();
+    ctx.lineWidth = thick;
+    ctx.strokeStyle = color;
+    ctx.font="20px Georgia";
+
+    var shift_coff={};
+    shift_coff.x_coff = Number(plot_data.xrange) / (canvas.width - 2 * margin);
+    shift_coff.y_coff = Number(plot_data.yrange) / (canvas.height - 2 * margin);
+    
+    for (var i=0;i<=plot_data.cpu_data.length-1;i++) {
+        xx = plot_data.time_data[i] / shift_coff.x_coff;
+        yy = canvas.height - plot_data.cpu_data[i] / shift_coff.y_coff - margin;
+        if (i==0) {
+            ctx.moveTo(xx,yy); 
+            ctx.fillText(plot_data.cpu_data[i].toString(), xx, yy);
+        }
+        else {
+            ctx.lineTo(xx,yy);
+            ctx.fillText(plot_data.cpu_data[i].toString(), xx, yy);
+        }
+    }
+    ctx.stroke();
+}
+
+function showAxes(ctx,axes) {
+    var w=ctx.canvas.width;
+    var h=ctx.canvas.height;
+    ctx.beginPath();
+    ctx.lineWidth = 2;
+    ctx.strokeStyle = "rgb(70,20,128)"; 
+    ctx.moveTo(0,0); ctx.lineTo(0,h);  // Y axis
+    ctx.moveTo(0,h); ctx.lineTo(w,h);  // X axis
+
+    ctx.moveTo(0,0); ctx.lineTo(w,0);  // Y axis
+    ctx.moveTo(w,0); ctx.lineTo(w,h);  // Y axis
+    ctx.stroke();
+}
+</script>
+
+<div id="main" class="pure-u-1" style='font-family=courier;'>
+    <div class="email-content">
+        <div class="email-content-header pure-g">
+            <div class="pure-u-1-2">
+                <h1 style="font-family:courier;" class="email-content-title">Instructions</h1>
+                <p class="email-content-subtitle">
+                From <a>Control Center</a>
+                </p>
+            </div>
+        </div>
+        <div class="email-content-body" >
+            <div id="content">
+                <p>Now you can see the history information of this Raspberry Pi!</p>
+            	<body onload="draw()">
+            		<canvas id="canvas" width=500px height=300px></canvas>
+            	</body>
+                <p>The record starts with <br><a>{{start_time}} (UTC)</a> and ends with <br><a>{{end_time}} (UTC)</a>.<br> A total of <a>{{num}} data</a> is recoreded.</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
