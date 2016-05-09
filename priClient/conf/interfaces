@@ -1,0 +1,23 @@
+auto lo
+
+iface lo inet loopback
+auto eth0
+iface eth0 inet dhcp
+
+iface eth0 inet6 static
+
+auto wlan0
+allow-hotplug wlan0
+iface wlan0 inet6 static
+address 2001:DA8:B100:101d::1
+netmask 64
+
+iface eth0 inet6 static
+address 2001:DA8:E300:79C2:A889:400d::
+netmask 96
+
+
+#allow-hotplug wlan0
+#iface wlan0 inet manual
+#wpa-roam /etc/wpa_supplicant/wpa_supplicant.conf
+#iface default inet dhcp
