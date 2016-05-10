@@ -13,7 +13,7 @@ default_sample_period = 60
 default_sample_volumn = 60
 default_heart_beat_period = 600
 
-heart_beat_port_number = 8000
+heart_beat_port_number = 70
 
 
 def home(request):
@@ -37,7 +37,7 @@ def send_heart(request):
         data_config.save()
     else:
         data_config = data_config[0]
-
+    
     if request.get_full_path().find('/test') != -1:
         # send the request to localhost 127.0.0.2
         # currently we put the priServer on 127.0.0.2
@@ -47,9 +47,10 @@ def send_heart(request):
     else:
         result = heart_beat_ipv6(data_config.heart_beat_sample_period,
                                  'wlan0', heart_beat_port_number,
-                                 target_host=1, test_mode=0)
-    if result is False:  # retry immediately
-        return HttpResponse('0')
+                                 target_host=0, test_mode=0)  # using the intranet
+    
+    if result != 'success':  # retry immediately
+        return HttpResponse(result)
     return HttpResponse(str(data_config.heart_beat_sample_period))
 
 
@@ -116,7 +117,11 @@ def record_data(request):
         for i in xrange(len(database) - data_config.short_term_volumn + 1):
             database[i].delete()
 
-    cpu_data = CPU_data(cpu_unniced_user=float(get_CPU_data()))
+    value = -1
+    value = get_CPU_data()
+    value = float(get_CPU_data())
+    print(value)
+    cpu_data = CPU_data(cpu_unniced_user=value)
     cpu_data.save()
 
     return HttpResponse(str(data_config.short_term_sample_period))

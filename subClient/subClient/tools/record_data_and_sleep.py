@@ -11,11 +11,13 @@ The localloop server will return the configuration setting
 
 
 # global settings
-port_num = 8000
+port_num = 1037
 
 while(True):
-
-    req = urllib2.Request('http://127.0.0.1:' + str(port_num) + '/record/')
-    response = urllib2.urlopen(req)
-    time.sleep(float(response.read()) / 10)
-
+    try:
+        req = urllib2.Request('http://127.0.0.1:' + str(port_num) + '/record/')
+        response = urllib2.urlopen(req)
+        print('A data is recorded')
+        time.sleep(float(response.read()))
+    except:
+        print('error')

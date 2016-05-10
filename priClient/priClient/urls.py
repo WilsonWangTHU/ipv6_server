@@ -21,6 +21,7 @@ from priClient import views
 urlpatterns = [
     url(r'^admin/', admin.site.urls),  # the default admin page
     url(r'^home/$', views.home),  # the home page, display some basic
+    url(r'^$', views.home),  # the home page, display some basic
     url(r'^settings/$', views.show_settings),  # in this page, change the settings
     url(r'^change_settings/$', views.change_settings),  # in this page, change the settings
     url(r'^users/(\d+)/$', views.show_users),  # in this page, change the settings

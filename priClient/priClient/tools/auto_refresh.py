@@ -14,7 +14,7 @@ the server The local link. Server will return the configuration setting
 
 
 # global settings
-port_num = 8000
+port_num = 70
 test = True
 
 while(True):

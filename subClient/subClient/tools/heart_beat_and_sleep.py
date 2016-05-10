@@ -11,8 +11,8 @@ The localloop server will return the configuration setting
 
 
 # global settings
-port_num = 8000
-test = True
+port_num = 70 # todo, the port number might change!
+test = False
 
 while(True):
 
@@ -23,5 +23,7 @@ while(True):
 
     req = urllib2.Request('http://127.0.0.1:' + str(port_num) + path)
     response = urllib2.urlopen(req)
-    sleep_time = float(response.read())
+    print(response.read())
+    break
+    print(sleep_time)
     time.sleep(sleep_time)

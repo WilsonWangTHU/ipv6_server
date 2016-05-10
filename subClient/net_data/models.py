@@ -2,6 +2,7 @@ from __future__ import unicode_literals
 
 from django.db import models
 import os
+import random
 
 '''
 In this file, we define the data models from the subClient.
@@ -12,8 +13,8 @@ The subClient need to
 
 
 def get_CPU_data():
-    result = os.popen("top -n1 | awk '/Cpu\(s\):/ {print $2}'")
-    return result.readline().replace('\n', '')
+    result = round(random.random() * 100) / 100.0
+    return result
 
 
 class CPU_data(models.Model):
