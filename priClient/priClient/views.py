@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.http import HttpResponseNotAllowed
-from net_data.models import client_info, wlan_configuration
+from net_data.models import client_info, wlan_configuration, ivi_address_pool
 from net_data.util import create_client_info, delete_client_info, change_client_info, restart_wlan
 import datetime
 
@@ -98,6 +98,7 @@ def receive_heart_beat(request):
         ipv6_addresses = request.POST['ipv6_addresses']
         global_ipv6_address = request.POST['global_ipv6_address']
         heart_beat_frequency = request.POST['heart_beat_frequency']
+        ivi_address = request.POST['ivi_address']
     except KeyError:
         return HttpResponseNotAllowed('Wrong format')
 
@@ -108,13 +109,33 @@ def receive_heart_beat(request):
                            mac_address=mac_address,
                            ipv6_addresses=ipv6_addresses,
                            global_ipv6_address=global_ipv6_address,
-                           heart_beat_frequency=heart_beat_frequency)
+                           heart_beat_frequency=heart_beat_frequency,
+                           ivi_address=ivi_address)
     except client_info.DoesNotExist:
         create_client_info(mac_address=mac_address,
                            ipv6_addresses=ipv6_addresses,
                            global_ipv6_address=global_ipv6_address,
-                           heart_beat_frequency=heart_beat_frequency)
-    return HttpResponse('success')
+                           heart_beat_frequency=heart_beat_frequency,
+                           ivi_address=ivi_address)
+
+    if ivi_address != 'None':
+        try:
+            # ACK that an address has been used!
+            address_obj = ivi_address_pool.objects.filter(address=ivi_address)[0]
+            address_obj.status = 3
+            address_obj.save()
+            return HttpResponse('success\n' + address_obj.address)
+        except IndexError:  # it is not an valid address!
+            ivi_address = None
+
+    # The case when a new address is needed
+    try:
+        address_obj = ivi_address_pool.objects.filter(status=1)[0]
+        address_obj.status = 2
+        address_obj.save()
+        return HttpResponse('success\n' + address_obj.address)
+    except IndexError:  # no address available
+            return HttpResponse('success\n' + 'None')
 
 
 def show_users(request, e=0):
@@ -137,3 +158,47 @@ def show_users(request, e=0):
 
 def about(request):
     return render(request, 'info.html')
+
+
+def ivi_address(request):
+    addresses = ivi_address_pool.objects.all()
+
+    # are you first time here? then initialize the configuration
+    if len(addresses) == 0:
+        return render(request, 'ivi.html', {'address': '', 'num': 0})
+    else:
+        return render(request, 'ivi.html', {'address': addresses, 'num': 1})
+
+
+def change_ivi(request):
+    # TODO: ssl needed or admin needed
+    if request.method != 'POST':
+        return ivi_address(request)
+
+    congrat_info = 'Invalid input, check again!'
+
+    if 'status' in request.POST and 'iviaddress' in request.POST:  # change the status
+        if request.POST['status'].isdigit() and 0 < int(request.POST['status']) <= 2:
+            objects = ivi_address_pool.objects.filter(address=request.POST['iviaddress'])
+            if len(objects) != 0:
+                objects[0].status = int(request.POST['status'])
+                objects[0].save()
+                congrat_info = 'Successfully Changed The Settings'
+    else:
+        if 'newiviaddress' in request.POST:
+            new_obj = ivi_address_pool(address=request.POST['newiviaddress'])
+            new_obj.save()
+            congrat_info = 'Successfully Changed The Settings'
+        if 'deadiviaddress' in request.POST:
+            objects = ivi_address_pool.objects.filter(address=request.POST['deadiviaddress'])
+            if len(objects) != 0:
+                objects[0].delete()
+                congrat_info = 'Successfully Changed The Settings'
+
+    addresses = ivi_address_pool.objects.all()
+
+    # are you first time here? then initialize the configuration
+    if len(addresses) == 0:
+        return render(request, 'ivi.html', {'address': '', 'num': 0, 'Congrats': congrat_info})
+    else:
+        return render(request, 'ivi.html', {'address': addresses, 'num': 1, 'Congrats': congrat_info})

@@ -11,7 +11,7 @@ The localloop server will return the configuration setting
 
 
 # global settings
-port_num = 70 # todo, the port number might change!
+port_num = 70  # todo, the port number might change!
 test = False
 
 while(True):

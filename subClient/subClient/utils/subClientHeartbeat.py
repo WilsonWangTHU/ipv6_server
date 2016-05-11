@@ -1,5 +1,6 @@
 # from internetInfo import get_slaac_ip6_address, get_router_ipv6
 from internetInfo import get_all_global_ip6_address, get_mac_address
+from internetInfo import get_ivi_address
 import urllib2
 import urllib
 
@@ -32,6 +33,7 @@ def heart_beat_ipv6(heart_beat_time, iface_name, port_num, target_host=0, test_m
         data['mac_address'] = get_mac_address(iface_name)
         data['ipv6_addresses'] = address_data
         data['heart_beat_frequency'] = heart_beat_time
+        data['ivi_address'] = get_ivi_address(iface_name)
         data_urlencode = urllib.urlencode(data)
 
         if test_mode == 1 or test_mode == 2:

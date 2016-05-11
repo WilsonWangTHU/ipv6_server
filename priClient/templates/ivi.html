@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div id="list" class="pure-u-1">
+    <div class="email-item email-item-selected pure-g">
+
+        <div class="pure-u-3-4" style="font-family:courier;">
+            <h4 class="email-subject">Hello from THU</h4>
+            <p class="email-desc">
+            You are now able to see the status of the IVI addresses from the table
+            </p>
+        </div>
+    </div>
+</div>
+
+
+<div id="main" class="pure-u-1" style='font-family=courier;'>
+    <div class="email-content">
+        <div class="email-content-header pure-g">
+            <div class="pure-u-1-2">
+                <h1 style="font-family:courier;" class="email-content-title">Specific information</h1>
+                <p class="email-content-subtitle">
+                From <a>Control Center</a>
+                </p>
+            </div>
+        </div>
+        <div class="email-content-body" >
+            <p>Input the new information if necessary</p>
+            <form action="/change_ivi/" method="post" style="position:relative;">
+                New IVI address: <input type="text" name="newiviaddress">
+                <input type="submit" value="Submit" style=''>
+            </form>
+            <form action="/change_ivi/" method="post" style="position:relative;">
+                Delete IVI address: <input type="text" name="deadiviaddress">
+                <input type="submit" value="Submit" style=''>
+            </form>
+            <form action="/change_ivi/" method="post" style="position:relative;">
+                Change IVI of: <input type="text" name="iviaddress">
+                into status: <input type="text" name="status">
+                <input type="submit" value="Submit" style=''>
+            </form>
+
+            <p>
+            Below is the information of the IVI address. Note that: <br><a>1</a> stands for <a>unused</a>, <br><a>2</a> stands for <a>assigned</a>, <br><a>3</a> stands for <a>used</a>.<br>
+            <a style="font-size:160%;">{{Congrats}}</a>
+            </p>
+            {% if num %}
+            <table class="pure-table pure-table-horizontal">
+                <thead>
+                    <tr>
+                        <th>IVI Addresses</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for ivi in address %}
+                <tr>
+                    <td>{{ivi.address}}</td>
+                    <td>{{ivi.status}}</td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <p>No IVI addresses are available currently!</p>
+            {% endif %}
+            <br>
+        </div>
+    </div>
+</div>
+{% endblock %}

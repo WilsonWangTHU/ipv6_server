@@ -62,8 +62,8 @@
                     <thead>
                         <tr>
                             <th>Mac Address</th>
-                            <th>Global IPv6 address</th>
-                            <th>Heart Beat Frequency</th>
+                            <th>Global IPv6 Address</th>
+                            <th>IVI Address</th>
                         </tr>
                     </thead>
 
@@ -71,7 +71,7 @@
                     <tr>
                         <td>{{show_pi.mac_address}}</td>
                         <td>{{show_pi.global_ipv6_address}}</td>
-                        <td>{{show_pi.heart_beat_frequency}}</td>
+                        <td>{{show_pi.ivi_address}}</td>
                     </tr>
                     </tbody>
                 </table>
@@ -79,6 +79,7 @@
                 <table class="pure-table pure-table-bordered">
                     <thead>
                         <tr>
+                            <th>Heart Beat Frequency</th>
                             <th>Service Started From (UTC)</th>
                             <th>Last Service Was (UTC)</th>
                         </tr>
@@ -86,6 +87,7 @@
 
                     <tbody>
                     <tr>
+                        <td>{{show_pi.heart_beat_frequency}}</td>
                         <td>{{show_pi.service_start_time}}</td>
                         <td>{{show_pi.last_active_time}}</td>
                     </tr>

@@ -37,7 +37,7 @@ def send_heart(request):
         data_config.save()
     else:
         data_config = data_config[0]
-    
+
     if request.get_full_path().find('/test') != -1:
         # send the request to localhost 127.0.0.2
         # currently we put the priServer on 127.0.0.2
@@ -48,10 +48,11 @@ def send_heart(request):
         result = heart_beat_ipv6(data_config.heart_beat_sample_period,
                                  'wlan0', heart_beat_port_number,
                                  target_host=0, test_mode=0)  # using the intranet
-    
-    if result != 'success':  # retry immediately
-        return HttpResponse(result)
-    return HttpResponse(str(data_config.heart_beat_sample_period))
+
+    if result.find('success') == -1:  # retry immediately
+        return HttpResponse('failure\n' + str(data_config.heart_beat_sample_period))
+
+    return HttpResponse(result)
 
 
 def serve_data(request):

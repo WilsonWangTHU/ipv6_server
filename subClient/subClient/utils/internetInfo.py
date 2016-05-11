@@ -2,6 +2,27 @@ import subprocess  # use the debian/raspbian shell command
 import string
 
 
+def get_ivi_address(iface_name):
+    get_address_info = subprocess.Popen(['ip', '-6', 'addr', 'show', iface_name],
+                                        stdout=subprocess.PIPE)
+    get_address_info = subprocess.Popen(['grep', 'global'],
+                                        stdout=subprocess.PIPE,
+                                        stdin=get_address_info.stdout)
+    get_address_info = subprocess.Popen(['grep', '-v', 'dynamic'],
+                                        stdout=subprocess.PIPE,
+                                        stdin=get_address_info.stdout)
+    try:
+        addresses = get_address_info.communicate()[0][:-1].split('\n')
+        num_address = len(addresses)
+        for i_address in xrange(0, num_address):
+            addresses[i_address] = addresses[i_address].lstrip(' ').split(' ')[1]
+            addresses[i_address] = addresses[i_address].split('/')[0]
+    except IndexError:
+        return 'None'
+
+    return addresses[0]
+
+
 def shrink_hex_string(input_string):
     # from '0b10' to 'b10'. Ah! Why do people always want to look
     # smart? It is really no point to brief an ipv6 address!
