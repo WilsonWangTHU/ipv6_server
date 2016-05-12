@@ -52,7 +52,7 @@ def send_heart(request):
     if result.find('success') == -1:  # retry immediately
         return HttpResponse('failure\n' + str(data_config.heart_beat_sample_period))
 
-    return HttpResponse(result)
+    return HttpResponse(result + '\n' + str(data_config.heart_beat_sample_period))
 
 
 def serve_data(request):

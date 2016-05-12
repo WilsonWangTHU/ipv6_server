@@ -16,7 +16,6 @@ def get_ivi_address(iface_name):
         num_address = len(addresses)
         for i_address in xrange(0, num_address):
             addresses[i_address] = addresses[i_address].lstrip(' ').split(' ')[1]
-            addresses[i_address] = addresses[i_address].split('/')[0]
     except IndexError:
         return 'None'
 
