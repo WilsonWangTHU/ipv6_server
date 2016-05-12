@@ -100,7 +100,6 @@ def receive_heart_beat(request):
         global_ipv6_address = request.POST['global_ipv6_address']
         heart_beat_frequency = request.POST['heart_beat_frequency']
         ivi_address = request.POST['ivi_address']
-        pid = request.POST['pid']
     except KeyError:
         return HttpResponseNotAllowed('Wrong format')
 
@@ -120,33 +119,7 @@ def receive_heart_beat(request):
                            heart_beat_frequency=heart_beat_frequency,
                            ivi_address=ivi_address)
 
-    if ivi_address != 'None':
-        try:
-            # ACK that an address has been used!
-            std_ivi_address = IPy.IP(ivi_address.split('/')[0]).strCompressed() + '/' + ivi_address.split('/')[1]
-            address_obj = ivi_address_pool.objects.filter(address=std_ivi_address)[0]
-            address_obj.status = 3
-            address_obj.pid = pid
-            address_obj.mac = mac_address
-            address_obj.save()
-            return HttpResponse('success\n' + address_obj.address)
-        except IndexError:  # it is not an valid address!
-            ivi_address = None
-
-    # The case when a new address is needed, those with right pid or mac address
-    # come first
-    try:
-        address_obj = ivi_address_pool.objects.filter(pid=pid)
-        if len(address_obj) == 0:
-            address_obj = ivi_address_pool.objects.filter(mac=mac_address)
-            if len(address_obj) == 0:
-                address_obj = ivi_address_pool.objects.filter(status=1)
-        address_obj = address_obj[0]
-        address_obj.status = 2
-        address_obj.save()
-        return HttpResponse('success\n' + address_obj.address)
-    except IndexError:  # no address available
-            return HttpResponse('success\n' + 'None')
+    return HttpResponse('success\n')
 
 
 def show_users(request, e=0):

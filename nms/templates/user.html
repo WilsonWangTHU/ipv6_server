@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div id="list" class="pure-u-1">
+{% if empty_list %}
+    <div class="email-item email-item-selected pure-g">
+
+        <div class="pure-u-3-4" style="font-family:courier;">
+            <h4 class="email-subject">Hello from THU</h4>
+            <p class="email-desc">
+            No users now!! It seems pretty lonely around here.
+            </p>
+        </div>
+    </div>
+{% else %}
+    {% for post in post_list %}
+    <div class="email-item email-item-selected pure-g">
+
+        <div class="pure-u-3-4" style="font-family:courier;">
+            <h4 class="email-subject">Raspberry {{forloop.counter}}</h4>
+            <p class="email-desc">
+            The Raspberry Pi user with ID: {{ forloop.counter }} is now online.</p>
+            <p class="email-desc">
+            Mac Address: <a href='/users/{{forloop.counter}}'>{{ post.mac_address }}</a>.
+            </p>
+        </div>
+    </div>
+    {% endfor %}
+{% endif %}
+</div>
+
+
+<div id="main" class="pure-u-1" style='font-family=courier;'>
+    <div class="email-content">
+        <div class="email-content-header pure-g">
+            <div class="pure-u-1-2">
+                <h1 style="font-family:courier;" class="email-content-title">Specific information</h1>
+                <p class="email-content-subtitle">
+                From <a>Control Center</a>
+                </p>
+            </div>
+        </div>
+        <div class="email-content-body" >
+            {% if empty_list %}
+            <p>
+            Dear Users,<br>
+            currently, no users seem to be connected to this access point or ad hoc route to data center.</p>
+            <p>
+            If you have already open the wlan on this Raspberry Pi, check the secondary Raspberry Pis. They might be sleeping.
+            </p>
+            <p>If the secondary Pis are already trying the connect to this server. Somethings might went wrong. <a href='/about/'>Contact us</a></p>
+            <p>
+            Control Center
+            </p>
+            {% else %}  <!-- The case where there are users-->
+                <p>
+                The Raspberry Pi {{major_id}}'s information is as followed
+                </p>
+                Access the Pi by <a href='http://[{{show_pi.global_ipv6_address}}]:70/home/'>clicking here</a>
+                <table class="pure-table pure-table-horizontal">
+                    <thead>
+                        <tr>
+                            <th>Mac Address</th>
+                            <th>Global IPv6 Address</th>
+                            <th>IVI Address</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                    <tr>
+                        <td>{{show_pi.mac_address}}</td>
+                        <td>{{show_pi.global_ipv6_address}}</td>
+                        <td>{{show_pi.ivi_address}}</td>
+                    </tr>
+                    </tbody>
+                </table>
+                <br>
+                <table class="pure-table pure-table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Heart Beat Frequency</th>
+                            <th>Service Started From (UTC)</th>
+                            <th>Last Service Was (UTC)</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                    <tr>
+                        <td>{{show_pi.heart_beat_frequency}}</td>
+                        <td>{{show_pi.service_start_time}}</td>
+                        <td>{{show_pi.last_active_time}}</td>
+                    </tr>
+                    </tbody>
+                </table>
+
+                <br>
+                <table class="pure-table pure-table-horizontal">
+                    <thead>
+                        <tr>
+                            <th>All IPv6 Addresses</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                    {% for add in show_all_addresses%}
+                    <tr>
+                        <td>{{add.ipv6_address}}</td>
+                    </tr>
+                    {% endfor %}
+
+                    </tbody>
+                </table>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

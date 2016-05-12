@@ -1,7 +1,0 @@
-Listen 70
-NamevirtualHost *:70
-
-<virtualhost *:70>
-    WSGIScriptAlias / /project/Djcode/mysite/apache/django.wsgi
-</virtualhost>
-

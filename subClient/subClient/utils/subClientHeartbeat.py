@@ -3,6 +3,10 @@ from internetInfo import get_all_global_ip6_address, get_mac_address
 from internetInfo import get_ivi_address
 import urllib2
 import urllib
+from subClient.pid import pid
+
+
+nms_address = '2001:250:3::191'
 
 
 def heart_beat_ipv6(heart_beat_time, iface_name, port_num, target_host=0, test_mode=0):
@@ -34,6 +38,7 @@ def heart_beat_ipv6(heart_beat_time, iface_name, port_num, target_host=0, test_m
         data['ipv6_addresses'] = address_data
         data['heart_beat_frequency'] = heart_beat_time
         data['ivi_address'] = get_ivi_address(iface_name)
+        data['pid'] = pid
         data_urlencode = urllib.urlencode(data)
 
         if test_mode == 1 or test_mode == 2:
@@ -43,10 +48,14 @@ def heart_beat_ipv6(heart_beat_time, iface_name, port_num, target_host=0, test_m
             res = res_data.read()
             print(res)
         else:  # the actual mode
-            requrl = 'http://[' + router_address + ']:' + str(port_num) + '/heart/'
+            # also tell the nms about this
+            requrl = 'http://[' + nms_address + ']:' + str(port_num) + '/heart/'
             req = urllib2.Request(url=requrl, data=data_urlencode)
             res_data = urllib2.urlopen(req)
 
+            requrl = 'http://[' + router_address + ']:' + str(port_num) + '/heart/'
+            req = urllib2.Request(url=requrl, data=data_urlencode)
+            res_data = urllib2.urlopen(req)
         return res_data.read()
     except IndexError:
         print("No mac address or IPv6 address available")
