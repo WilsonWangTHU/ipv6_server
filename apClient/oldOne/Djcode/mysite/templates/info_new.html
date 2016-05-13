@@ -1,0 +1,22 @@
+<html>
+<head>
+	<title>tunnel info</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+    <meta http-equiv="Content-Language" content="zh-CN" />
+</head>
+<body>
+    <img src='/static/image/logo.png'>
+    <hr><pre>
+username:{{username}}
+Ipv6 gate:{{v6_gate}}
+IVI:{{ivi_gate}}
+IVI4:{{ivi4_gate}}
+{% for dns in dns_list %}dns server:{{dns}}
+{% endfor %}ipv4 global address:{{v4_global}}
+server address:<a href="{{server_addr}}">{{server_addr}}</a>
+ivi server address:<a href="{{server_ivi_addr}}">{{server_ivi_addr}}</a>
+ivi4 server address:<a href="{{server_ivi4_addr}}">{{server_ivi4_addr}}</a>
+</pre></hr>
+<hr><div align="center"><p class=b>&copy;2009-2014 All rights reserved. IoT6</p></div>
+</body>
+</html>

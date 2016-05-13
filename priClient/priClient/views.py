@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.http import HttpResponseNotAllowed
-from net_data.models import client_info, wlan_configuration, ivi_address_pool
+from net_data.models import client_info, wlan_configuration, ivi_address_pool, prefix_address_pool
 from net_data.util import create_client_info, delete_client_info, change_client_info, restart_wlan
 import datetime
 import IPy
@@ -214,3 +214,47 @@ def change_ivi(request):
         return render(request, 'ivi.html', {'address': '', 'num': 0, 'Congrats': congrat_info})
     else:
         return render(request, 'ivi.html', {'address': addresses, 'num': 1, 'Congrats': congrat_info})
+
+
+def receive_prefix_request(request):
+    # it is the test function. return the data of the heart beat
+    if request.method != 'POST':
+        return HttpResponse('What are doing? No data?')
+    try:
+        mac_address = request.POST['mac_address']
+        # ipv6_addresses = request.POST['ipv6_addresses']
+        global_ipv6_address = request.POST['global_ipv6_address']
+        # heart_beat_frequency = request.POST['heart_beat_frequency']
+        # ivi_address = request.POST['ivi_address']
+        pid = request.POST['pid']
+        prefix = request.POST['prefix']
+    except KeyError:
+        return HttpResponseNotAllowed('Wrong format')
+
+    if prefix != 'None':
+        try:
+            # ACK that an prefix has been used!
+            address_obj = prefix_address_pool.objects.filter(address=prefix)[0]
+            address_obj.status = 3
+            address_obj.pid = pid
+            address_obj.mac = mac_address
+            address_obj.global_address = global_ipv6_address
+            address_obj.save()
+            return HttpResponse('success\n' + address_obj.address)
+        except IndexError:  # it is not an valid address!
+            address_obj = None
+
+    # The case when a new address is needed, those with right pid or mac address
+    # come first
+    try:
+        address_obj = prefix_address_pool.objects.filter(pid=pid)
+        if len(address_obj) == 0:
+            address_obj = ivi_address_pool.objects.filter(mac=mac_address)
+            if len(address_obj) == 0:
+                address_obj = ivi_address_pool.objects.filter(status=1)
+        address_obj = address_obj[0]
+        address_obj.status = 2
+        address_obj.save()
+        return HttpResponse('success\n' + address_obj.address)
+    except IndexError:  # no address available
+            return HttpResponse('success\n' + 'None')

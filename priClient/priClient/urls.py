@@ -32,5 +32,6 @@ urlpatterns = [
     url(r'^auto_refresh/$', views.refresh_client_info),
     # the heart beat page for subClient
     url(r'^heart/$', views.receive_heart_beat),
+    url(r'^prefix/$', views.receive_prefix_request),
     url(r'^info/$', views.about),
 ]

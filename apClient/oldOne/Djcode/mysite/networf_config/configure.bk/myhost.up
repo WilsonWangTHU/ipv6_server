@@ -1,0 +1,30 @@
+#! /bin/sh
+
+#openvpn客户端接口配置
+/sbin/ifconfig $dev up
+/sbin/ifconfig $dev add 2001:da8:b100:1002:1234:5678:9abc:1/64
+/sbin/ip -6 route add ::/0 dev $dev
+/sbin/ip -6 route add 2001::/3 via 2001:da8:b100:1002::1 dev $dev
+
+#ipv6路由配置
+#/sbin/ip -6 addr add 2001:da8:b100:1002:1234:5678:9abc:1002/112 dev eth1
+#/sbin/ip -6 route add 2001:da8:b100:1002:1234:5678:9abc:1003/112 dev eth1
+#/sbin/sysctl net.ipv6.conf.all.forwarding=1
+
+#NAT配置
+#/sbin/sysctl net.ipv4.conf.all.forwarding=1
+#/sbin/modprobe iptable
+#/sbin/modprobe iptable_filter
+#/sbin/modprobe iptable_nat
+#/sbin/modprobe ip_nat_ftp
+#/sbin/modprobe ip_conntrack
+#/sbin/modprobe ip_conntrack_ftp
+#/sbin/modprobe ip_conntrack_irc
+#/sbin/modprobe ip_nat_irc
+
+#/sbin/iptables -A INPUT -i eth1 -j ACCEPT
+#/sbin/iptables -t nat -A POSTROUTING -s 192.168.6.0/24 -o eth0 -j SNAT --to 121.194.167.61 
+
+#dhcpv6配置
+#/usr/sbin/dhcpd -6 -d -cf /etc/dhcp/dhcpv6.conf eth1
+

@@ -1,0 +1,26 @@
+[State]
+if_register = 0
+if_login = 0
+if_first_login = 0
+tunnel_type = 0
+
+[UserInfo]
+username = 0
+password = 0
+mac = 0
+
+[TunnelInfo]
+server_ipv4 = 0
+client_ipv4 = 0
+ipv6_addr = 0
+ipv6_addr_netmask = 0
+ivi_addr = 0
+ivi_addr_netmask = 0
+openvpn_interface = 0
+openvpn_interface_netmask = 0
+ip_interface_server = 0
+ip_interface_server_netmask = 0
+ip_interface_client = 0
+ip_interface_client_netmask = 0
+sitname = 0
+openvpn_common_name = 0

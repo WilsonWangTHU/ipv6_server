@@ -36,3 +36,13 @@ class ivi_address_pool(models.Model):
     mac = models.CharField(max_length=100, default='None')
     status = models.IntegerField(default=1)
     time = models.DateTimeField(auto_now=True)
+
+
+class prefix_address_pool(models.Model):
+    # status = 1: usable, = 2: assigned, 3: used
+    address = models.CharField(max_length=100)
+    global_address = models.CharField(max_length=100, default='None')
+    pid = models.CharField(max_length=100, default='None')
+    mac = models.CharField(max_length=100, default='None')
+    status = models.IntegerField(default=1)
+    time = models.DateTimeField(auto_now=True)
