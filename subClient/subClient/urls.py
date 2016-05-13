@@ -24,6 +24,7 @@ app_name = 'subClient'
 urlpatterns = [
     url(r'^admin/', admin.site.urls),  # the default admin page
     url(r'^home/$', views.home),
+    url(r'^/$', views.home),
     url(r'^record/$', views.record_data),
     url(r'^serve/now/$', views.serve_data),
     url(r'^serve/short_term/$', views.serve_data),
