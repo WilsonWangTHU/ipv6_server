@@ -1,0 +1,14 @@
+#! /bin/sh
+
+sudo cp /project/Djcode/mysite/networf_config/radvd.conf.logout /etc/radvd.conf
+sudo cp /project/Djcode/mysite/networf_config/interfaces /etc/network/interfaces
+sudo cp /project/Djcode/mysite/networf_config/configure.bk/wsgi.conf /etc/apache2/conf.d/wsgi.conf
+sudo cp /project/Djcode/mysite/networf_config/wsgi.conf.logout /etc/apache2/conf.d/wsgi.conf
+sudo /etc/init.d/networking restart
+#sudo rm /etc/openvpn/key.tar.gz
+#sudo rm -rf /etc/openvpn/keys/
+sudo rm /etc/openvpn/myhost.*
+#sudo service radvd restart
+#sudo service apache2 restart
+sudo service radvd restart
+sudo service apache2 graceful

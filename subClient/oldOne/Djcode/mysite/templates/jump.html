@@ -1,0 +1,96 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<html>
+<head>
+	<title>Tunnel Broker</title>
+	<meta http-equiv="refresh" content="3; url={{next}}">  
+	<script src="https://code.jquery.com/jquery.js"></script>
+</head>
+<body>
+
+{% if jump_kind == -1%}
+    <p style="color:red">unknown error!<p>
+{% endif %}
+
+{% if jump_kind == 0 %}
+    <p style="color:green">first login! we will jump to guide page<p>
+{% endif %}
+
+
+{% if jump_kind == 1%}
+    {% if error == 0 %}
+        <p style="color:red">tunnel configured is down, we will jump to info page</p>
+    {% endif %}
+    {% if error == 1 %}
+        <p style="color:green">true mac address! we will jump to info page in 5s</p>
+    {% endif %}
+    {% if error == 2 %}
+        <p style="color:red">mac address already used! we will jump to auth page in 5s</p>
+    {% endif %}
+{% endif %}
+
+
+{% if jump_kind == 2 %}
+    {% if error == -1 %}
+        <p style="color:red">username or password is wrong!, we will jump to tunnel info page in 5s</p>
+    {% endif %}
+    {% if error == 0 %}
+        <p style="color:red">Fail to create tunnel, we will jump to tunnel info page in 5s</p>
+    {% endif %}
+    {% if error == 1 %}
+        <p style="color:green">Creating IP layer tunnel successfully, we will jump to tunnel info page in 5s</p>
+    {% endif %}
+    {% if error == 2 %}
+        <p style="color:green">Creating transport layer tunnel successfully, we will jump to tunnel info page in 5s</p>
+    {% endif %}
+    {% if error == 3 %}
+        <p style="color:red">You have created tunnel now, please break the current tunnel first, we will jump to tunnel info page in 5s!</p>
+    {% endif %}
+{% endif %}
+
+
+{% if jump_kind == 3 %}
+    {% if error == -1 %}
+        <p style="color:red">unknow error, we will jump to tunnel info page in 5s</p>
+    {% endif %}
+    {% if error == 0 %}
+        <p style="color:red">You don't create any tunnel,we will jump to tunnel info page in 5s !</p>
+    {% endif %}
+    {% if error == 1 %}
+        <p style="color:green">Deleting transport layer tunnel successfully we will jump to tunnel info page in 5s</p>
+    {% endif %}
+    {% if error == 2 %}
+        <p style="color:green">Deletting transport layer tunnel successfully we will jump to tunnel info page in 5s</p>
+    {% endif %}
+{% endif %}
+
+{% if jump_kind == 4 %}
+    {% if error == 0 %}
+        <p style="color:red">Fail to logout, we will jump to login page in 5s</p>
+    {% endif %}
+    {% if error == 1 %}
+        <p style="color:green">Succeed in logout, we will jump to login page in 5s</p>
+    {% endif %}
+{% endif %}
+
+{% if jump_kind == 5 %}
+    {% if error == -1 %}
+        <p style="color:red">wrong username or password!</p>
+    {% endif %}
+    {% if error == 0 %}
+        <p style="color:red">username or password does not match your config!</p>
+    {% endif %}
+    {% if error == 1 %}
+        <p style="color:green">success!</p>
+    {% endif %}
+    {% if error ==  2%}
+        <p style="color:red">please reset new password</p>
+    {% endif %}
+    {% if error ==  3%}
+        <p style="color:red">username exist!</p>
+    {% endif %}
+{% endif %}
+
+    <br />
+    <p>if the page doesn't jump <a href={{next}}>click here</a>to jump</p>
+</body>
+</html>

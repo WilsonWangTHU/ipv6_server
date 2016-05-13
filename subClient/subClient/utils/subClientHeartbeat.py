@@ -37,7 +37,7 @@ def heart_beat_ipv6(heart_beat_time, iface_name, port_num, target_host=0, test_m
         data['mac_address'] = get_mac_address(iface_name)
         data['ipv6_addresses'] = address_data
         data['heart_beat_frequency'] = heart_beat_time
-        data['ivi_address'] = get_ivi_address('eth0')
+        data['ivi_address'] = get_ivi_address(iface_name)
         data['pid'] = pid
         data_urlencode = urllib.urlencode(data)
 
