@@ -253,7 +253,7 @@ def receive_prefix_request(request):
             if len(address_obj) == 0:
                 address_obj = ivi_address_pool.objects.filter(status=1)
         address_obj = address_obj[0]
-        address_obj.status = 2
+        address_obj.status = 1
         address_obj.save()
         return HttpResponse('success\n' + address_obj.address)
     except IndexError:  # no address available
