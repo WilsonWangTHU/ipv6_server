@@ -1,0 +1,14 @@
+interface wlan1
+{
+	AdvSendAdvert on;
+	MinRtrAdvInterval 30;
+	MaxRtrAdvInterval 100;
+	AdvDefaultLifetime 100;
+	prefix THEPREFIX/64
+	{
+		AdvValidLifetime 86400; 
+		AdvOnLink on;
+		AdvAutonomous on;
+		AdvRouterAddr off;
+	};
+};

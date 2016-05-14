@@ -105,9 +105,9 @@ def request_prefix_ipv6(heart_beat_time, iface_name, port_num, target_host=0, te
             print(res)
         else:  # the actual mode
             # also tell the nms about this
-            requrl = 'http://[' + nms_address + ']:' + str(port_num) + '/prefix/'
-            req = urllib2.Request(url=requrl, data=data_urlencode)
-            res_data = urllib2.urlopen(req)
+            # requrl = 'http://[' + nms_address + ']:' + str(port_num) + '/prefix/'
+            # req = urllib2.Request(url=requrl, data=data_urlencode)
+            # res_data = urllib2.urlopen(req)
 
             requrl = 'http://[' + router_address + ']:' + str(port_num) + '/prefix/'
             req = urllib2.Request(url=requrl, data=data_urlencode)

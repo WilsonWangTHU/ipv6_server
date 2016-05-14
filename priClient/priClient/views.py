@@ -5,6 +5,7 @@ from net_data.models import client_info, wlan_configuration, ivi_address_pool, p
 from net_data.util import create_client_info, delete_client_info, change_client_info, restart_wlan
 import datetime
 import IPy
+import subprocess
 
 
 def refresh_client_info(request=0):
@@ -240,6 +241,7 @@ def receive_prefix_request(request):
             address_obj.mac = mac_address
             address_obj.global_address = global_ipv6_address
             address_obj.save()
+            subprocess.Popen('sudo ip -6 route add ' + address_obj.address + '/64 via ' + global_ipv6_address + ' dev wlan0', shell=True)
             return HttpResponse('success\n' + address_obj.address)
         except IndexError:  # it is not an valid address!
             address_obj = None
@@ -249,12 +251,14 @@ def receive_prefix_request(request):
     try:
         address_obj = prefix_address_pool.objects.filter(pid=pid)
         if len(address_obj) == 0:
-            address_obj = ivi_address_pool.objects.filter(mac=mac_address)
+            address_obj = prefix_address_pool.objects.filter(mac=mac_address)
             if len(address_obj) == 0:
-                address_obj = ivi_address_pool.objects.filter(status=1)
+                address_obj = prefix_address_pool.objects.filter(status=1)
         address_obj = address_obj[0]
-        address_obj.status = 1
+        address_obj.status = 2
         address_obj.save()
+        # add the routing table
+        subprocess.Popen('sudo ip -6 route add ' + address_obj.address + '/64 via ' + global_ipv6_address + ' dev wlan0', shell=True)
         return HttpResponse('success\n' + address_obj.address)
     except IndexError:  # no address available
             return HttpResponse('success\n' + 'None')

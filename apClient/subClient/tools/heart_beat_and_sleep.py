@@ -45,6 +45,7 @@ while(True):
     response = urllib2.urlopen(req)
     data = response.read()
     isSuccess = (data.split('\n')[0] == 'success')
+    print(data)
 
     if isSuccess:
         new_address = data.split('\n')[1]

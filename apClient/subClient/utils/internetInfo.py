@@ -12,7 +12,7 @@ def get_subnet_prefix(iface_name):
         prefix = std_address[0: pos]
     except IndexError:
         return 'None'
-    return prefix + '/64'
+    return prefix + '::'
 
 
 def get_ivi_address(iface_name):

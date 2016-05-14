@@ -262,10 +262,8 @@ LogFormat "%{User-agent}i" agent
 # see the comments above for details.
 
 # Include generic snippets of statements
-Include conf.d/
 
 # Include the virtual host configurations:
-Include sites-enabled/
 Listen 70
 <virtualhost *:70>
 WSGIScriptAlias / /subClient/subClient/wsgi.py
