@@ -8,6 +8,8 @@ from net_data.models import configuration, CPU_data
 
 from utils.subClientHeartbeat import heart_beat_ipv6, request_prefix_ipv6
 import datetime
+from utils.change_route_table import set_second_ivi_route
+import subprocess
 
 default_sample_period = 60
 default_sample_volumn = 60
@@ -259,4 +261,16 @@ def prefix_request(request):
 
 
 def update_route(request):
+    if request.method != 'POST':
+        return HttpResponse('What are doing? No data?')
+    try:
+        target_address = request.POST['target_address']
+        target_via = request.POST['target_via']
+    except KeyError:
+        return HttpResponseNotAllowed('Wrong format')
+    subprocess.Popen('sudo ip -6 route add ' + target_address + ' dev wlan1', shell=True)
+    return HttpResponse('success')
+
+    result = set_second_ivi_route(target_address, target_via, 'wlan1')
+
     return HttpResponse('success')
