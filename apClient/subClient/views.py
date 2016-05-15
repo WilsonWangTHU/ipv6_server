@@ -256,3 +256,7 @@ def prefix_request(request):
         return HttpResponse('failure\n' + str(data_config.heart_beat_sample_period))
 
     return HttpResponse(result + '\n' + str(data_config.heart_beat_sample_period))
+
+
+def update_route(request):
+    return HttpResponse('success')

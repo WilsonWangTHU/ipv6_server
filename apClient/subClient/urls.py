@@ -37,4 +37,5 @@ urlpatterns = [
     url(r'^settings/$', views.show_settings),  # in this page, change the settings
     url(r'^info/$', views.about),
     url(r'^status/$', views.status),
+    url(r'^update_route/$', views.update_route),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

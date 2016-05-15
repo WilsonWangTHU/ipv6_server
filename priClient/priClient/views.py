@@ -6,7 +6,9 @@ from net_data.util import create_client_info, delete_client_info, change_client_
 import datetime
 import IPy
 import subprocess
+from priClient.utils.change_route_table import set_second_ivi_route
 
+output_file = '/home/pi/test.txt'
 
 def refresh_client_info(request=0):
     # this function could be used by url request, or used by other
@@ -130,6 +132,7 @@ def receive_heart_beat(request):
             address_obj.pid = pid
             address_obj.mac = mac_address
             address_obj.save()
+            # now change the routing table
             return HttpResponse('success\n' + address_obj.address)
         except IndexError:  # it is not an valid address!
             ivi_address = None
@@ -145,6 +148,7 @@ def receive_heart_beat(request):
         address_obj = address_obj[0]
         address_obj.status = 2
         address_obj.save()
+        result = set_second_ivi_route(address_obj.address, global_ipv6_address, 'wlan0')
         return HttpResponse('success\n' + address_obj.address)
     except IndexError:  # no address available
             return HttpResponse('success\n' + 'None')

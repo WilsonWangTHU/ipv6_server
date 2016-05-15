@@ -31,9 +31,11 @@ def get_ivi_address(iface_name):
         num_address = len(addresses)
         for i_address in xrange(0, num_address):
             addresses[i_address] = addresses[i_address].lstrip(' ').split(' ')[1]
-            if addresses[i_address].find('2001::') != -1:
-                addresses.pop(i_address)
-        return addresses[0]
+
+        for i_address in xrange(0, num_address):
+            if addresses[i_address].find('2001::') == -1:
+                return addresses[i_address]
+        return 'None'
     except IndexError:
         return 'None'
 
