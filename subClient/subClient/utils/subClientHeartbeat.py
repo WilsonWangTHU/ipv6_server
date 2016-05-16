@@ -28,7 +28,7 @@ def heart_beat_ipv6(heart_beat_time, iface_name, port_num, target_host=0, test_m
         address_data = ''
         global_address = ''
         for address in ipv6_addresses:
-            if address.find('2001::') == -1:
+            if address.find('2001::') == -1 and address.find('/96') == -1:
                 global_address = address.replace('/64', '')
             address_data = address_data + address.replace('/64', '') + '\n'
 
@@ -39,6 +39,8 @@ def heart_beat_ipv6(heart_beat_time, iface_name, port_num, target_host=0, test_m
         data['heart_beat_frequency'] = heart_beat_time
         data['ivi_address'] = get_ivi_address(iface_name)
         data['pid'] = get_pid()
+        data['position'] = 'Client'
+        data['prefix'] = 'Client_No_Prefix'
         data_urlencode = urllib.urlencode(data)
 
         if test_mode == 1 or test_mode == 2:
