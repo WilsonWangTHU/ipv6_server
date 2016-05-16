@@ -18,6 +18,10 @@ class client_info(models.Model):
     service_start_time = models.DateTimeField(auto_now_add=True)
     heart_beat_frequency = models.IntegerField(default=600)
 
+    prefix = models.CharField(max_length=100, default='None')
+    position = models.CharField(max_length=100, default='Unknown')
+    life = models.CharField(max_length=100, default='active')
+
     # TODO LIST:
     # permission_granted_time = models.DateTimeField()
 

@@ -7,6 +7,7 @@ import datetime
 import IPy
 import subprocess
 from priClient.utils.change_route_table import set_second_ivi_route
+from priClient.utils.subClientHeartbeat import heart_beat_ipv6
 
 output_file = '/home/pi/test.txt'
 
@@ -266,3 +267,16 @@ def receive_prefix_request(request):
         return HttpResponse('success\n' + address_obj.address)
     except IndexError:  # no address available
             return HttpResponse('success\n' + 'None')
+
+
+def send_heart(request):
+    # in this function, the subClient send data to the priClient
+    # and return the configuration data, which is the time
+    # from subClientHeartbeat import heart_beat_ipv6
+
+    result = heart_beat_ipv6(10, 'wlan0', 70, target_host=0, test_mode=0)  # using the intranet
+    if result.find('success') == -1:  # retry immediately 
+        return HttpResponse('failure\n' + '10')
+
+    return HttpResponse(result + '\n' + '10')
+

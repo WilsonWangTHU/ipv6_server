@@ -100,6 +100,8 @@ def receive_heart_beat(request):
         global_ipv6_address = request.POST['global_ipv6_address']
         heart_beat_frequency = request.POST['heart_beat_frequency']
         ivi_address = request.POST['ivi_address']
+        position = request.POST['position']
+        prefix = request.POST['prefix']
     except KeyError:
         return HttpResponseNotAllowed('Wrong format')
 
@@ -111,13 +113,17 @@ def receive_heart_beat(request):
                            ipv6_addresses=ipv6_addresses,
                            global_ipv6_address=global_ipv6_address,
                            heart_beat_frequency=heart_beat_frequency,
-                           ivi_address=ivi_address)
+                           ivi_address=ivi_address,
+                           prefix=prefix,
+                           position=position)
     except client_info.DoesNotExist:
         create_client_info(mac_address=mac_address,
                            ipv6_addresses=ipv6_addresses,
                            global_ipv6_address=global_ipv6_address,
                            heart_beat_frequency=heart_beat_frequency,
-                           ivi_address=ivi_address)
+                           ivi_address=ivi_address,
+                           prefix=prefix,
+                           position=position)
 
     return HttpResponse('success\n')
 
@@ -130,13 +136,23 @@ def show_users(request, e=0):
     post_list = client_info.objects.all()
     is_empty_list = (len(post_list) == 0)
 
+    # calculate the curresponding IVI address
+    ivi_ipv6_address = post_list[major_id - 1].ivi_address
+    if ivi_ipv6_address.find('::/96') == -1:
+        ivi_ipv4_address = 'None'
+    else:
+        pos = ivi_ipv6_address.find('::')
+        apache_port_num = int(ivi_ipv6_address[pos - 4: pos]) % 16 + 1024
+        ivi_ipv4_address = '121.194.168.143:' + str(apache_port_num) + '/home/'
+
     return render(request, 'user.html',
                   {'post_list': post_list,
                       'empty_list': is_empty_list,
                       'major_id': major_id,
                       'show_pi': post_list[major_id - 1],
                       'show_all_addresses':
-                          post_list[major_id - 1].ipv6_addresses.all()}
+                          post_list[major_id - 1].ipv6_addresses.all(),
+                      'ivi_ipv4_address': ivi_ipv4_address}
                   )
 
 

@@ -61,6 +61,24 @@
                 <table class="pure-table pure-table-horizontal">
                     <thead>
                         <tr>
+                            <th>Type of the Pi</th>
+                            <th>AP Prefix</th>
+                            <th>Connection Status</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                    <tr>
+                        <td>{{show_pi.position}}</td>
+                        <td>{{show_pi.prefix}}</td>
+                        <td>{{show_pi.life}}</td>
+                    </tr>
+                    </tbody>
+                </table>
+
+                <table class="pure-table pure-table-horizontal">
+                    <thead>
+                        <tr>
                             <th>Mac Address</th>
                             <th>Global IPv6 Address</th>
                             <th>IVI Address</th>
@@ -70,8 +88,8 @@
                     <tbody>
                     <tr>
                         <td>{{show_pi.mac_address}}</td>
-                        <td>{{show_pi.global_ipv6_address}}</td>
-                        <td>{{show_pi.ivi_address}}</td>
+                        <td><a href='http://[{{show_pi.global_ipv6_address}}]:70/home/'>{{show_pi.global_ipv6_address}}</a></td>
+                        <td><a href=http://{{ivi_ipv4_address}}>{{show_pi.ivi_address}}</a></td>
                     </tr>
                     </tbody>
                 </table>

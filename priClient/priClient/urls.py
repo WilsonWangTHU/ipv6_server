@@ -26,6 +26,7 @@ urlpatterns = [
     url(r'^change_settings/$', views.change_settings),  # in this page, change the settings
     url(r'^users/(\d+)/$', views.show_users),  # in this page, change the settings
     url(r'^users/$', views.show_users),  # in this page, change the settings
+    url(r'^sendHeart/$', views.send_heart),  # in this page, change the settings
     url(r'^iviaddress/$', views.ivi_address),  # in this page, change the settings
     url(r'^change_ivi/$', views.change_ivi),  # in this page, change the settings
     # the auto refresh page for priClient itself

@@ -30,12 +30,14 @@ def modify_hostapd_conf():
 
 
 def create_client_info(mac_address, ipv6_addresses,
-                       global_ipv6_address, heart_beat_frequency, ivi_address):
+                       global_ipv6_address, heart_beat_frequency, ivi_address, prefix, position):
 
     client = client_info(mac_address=mac_address,
                          global_ipv6_address=global_ipv6_address,
                          heart_beat_frequency=heart_beat_frequency,
-                         ivi_address=ivi_address)
+                         ivi_address=ivi_address,
+                         prefix=prefix,
+                         position=position)
     client.save()
 
     # the address format:
@@ -49,11 +51,14 @@ def create_client_info(mac_address, ipv6_addresses,
 
 
 def change_client_info(client, mac_address, ipv6_addresses,
-                       global_ipv6_address, heart_beat_frequency, ivi_address):
+                       global_ipv6_address, heart_beat_frequency, ivi_address, prefix, position):
     client.mac_address = mac_address
     client.global_ipv6_address = global_ipv6_address
     client.heart_beat_frequency = heart_beat_frequency
     client.ivi_address = ivi_address
+    client.prefix = prefix
+    client.position = position
+    client.life = 'Active'
 
     for address in client.ipv6_addresses.all():
         address.delete()
