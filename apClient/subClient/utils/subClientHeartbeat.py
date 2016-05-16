@@ -39,6 +39,8 @@ def heart_beat_ipv6(heart_beat_time, iface_name, port_num, target_host=0, test_m
         data['heart_beat_frequency'] = heart_beat_time
         data['ivi_address'] = get_ivi_address(iface_name)
         data['pid'] = get_pid()
+        data['position'] = 'Client/AP'
+        data['prefix'] = get_subnet_prefix('wlan1')  # it is important
         data_urlencode = urllib.urlencode(data)
 
         if test_mode == 1 or test_mode == 2:
