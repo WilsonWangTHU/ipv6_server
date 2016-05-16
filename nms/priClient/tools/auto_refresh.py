@@ -20,7 +20,10 @@ test = True
 while(True):
     path = '/auto_refresh/'
 
-    req = urllib2.Request('http://127.0.0.2:' + str(port_num) + path)
+    req = urllib2.Request('http://127.0.0.1:' + str(port_num) + path)
     response = urllib2.urlopen(req)
-    sleep_time = float(response.read())
+    data = response.read()
+    print(data)
+
+    break
     time.sleep(sleep_time)

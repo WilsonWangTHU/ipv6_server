@@ -5,9 +5,40 @@ from net_data.models import client_info, wlan_configuration, ivi_address_pool
 from net_data.util import create_client_info, delete_client_info, change_client_info, restart_wlan
 import datetime
 import IPy
-
+import subprocess
 
 def refresh_client_info(request=0):
+    # this function could be used by url request, or used by other
+    # plain request
+    debug_info = ''
+    objects = client_info.objects.all()
+
+    if len(objects) == 0:
+        return HttpResponse('success')
+
+    for client_object in objects:
+        ipv6_address = client_object.global_ipv6_address
+        print('now testing:ping6 -c 3 -i 0.2 ' + ipv6_address)
+        if ipv6_address == 'None':
+            client_object.life = 'Dead'
+            client_object.save()
+            continue
+
+        get_ping_result = subprocess.Popen('ping6 -c 3 -i 0.2 ' + ipv6_address, shell=True, stdout=subprocess.PIPE)
+        get_result = subprocess.Popen('grep transmitted', shell=True, stdout=subprocess.PIPE, stdin=get_ping_result.stdout)
+        result = get_result.communicate()[0]
+        debug_info = debug_info + result
+        try:
+            received_packets = result.split(' ')[3]
+            if int(received_packets) < 1:
+                client_object.life = 'Dead'
+                client_object.save()
+        except:
+            client_object.life = 'Dead'
+            client_object.save()
+    return HttpResponse(debug_info)
+
+def old_refresh_client_info(request=0):
     # this function could be used by url request, or used by other
     # plain request
     objects = client_info.objects.all()

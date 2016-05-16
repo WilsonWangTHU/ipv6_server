@@ -9,10 +9,10 @@ class ipv6_address(models.Model):
 
 
 class client_info(models.Model):
-    mac_address = models.CharField(max_length=20, default='No Mac Address')
+    mac_address = models.CharField(max_length=20, default='None')
     ipv6_addresses = models.ManyToManyField(ipv6_address)
-    global_ipv6_address = models.CharField(max_length=100, default="No IPv6 Address")
-    ivi_address = models.CharField(max_length=100, default="test_global_address")
+    global_ipv6_address = models.CharField(max_length=100, default="None")
+    ivi_address = models.CharField(max_length=100, default="None")
 
     last_active_time = models.DateTimeField(auto_now=True)
     service_start_time = models.DateTimeField(auto_now_add=True)
@@ -20,7 +20,7 @@ class client_info(models.Model):
 
     prefix = models.CharField(max_length=100, default='None')
     position = models.CharField(max_length=100, default='Unknown')
-    life = models.CharField(max_length=100, default='active')
+    life = models.CharField(max_length=100, default='Active')
 
     # TODO LIST:
     # permission_granted_time = models.DateTimeField()
