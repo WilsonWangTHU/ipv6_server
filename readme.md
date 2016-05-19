@@ -9,6 +9,10 @@
 4. /ap_forward_NAT_setup.sh
 
 
-B8:27:EB:61:1C:CC ---> AP
+B8:27:EB:61:1C:CC ---> AP: 192.168.1.3
+
+
 B8:27:EB:C8:3D:F9 ---> 2AP
+
+
 B8:27:EB:06:BE:54 ---> simple Client

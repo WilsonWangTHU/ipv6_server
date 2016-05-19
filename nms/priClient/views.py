@@ -6,6 +6,8 @@ from net_data.util import create_client_info, delete_client_info, change_client_
 import datetime
 import IPy
 import subprocess
+from itertools import chain
+from netaddr.ip import IPNetwork
 
 def refresh_client_info(request=0):
     # this function could be used by url request, or used by other
@@ -164,7 +166,12 @@ def show_users(request, e=0):
     if major_id == 0:  # if no id is specified, show 1th
         major_id = 1
 
-    post_list = client_info.objects.all()
+    # get the AP, APClient, Client in order
+    APClient = client_info.objects.filter(position='Client/AP')
+    AP = client_info.objects.filter(position='AP')
+    Client = client_info.objects.filter(position='Client')
+    post_list = list(chain(AP, APClient, Client))
+
     is_empty_list = (len(post_list) == 0)
 
     # calculate the curresponding IVI address
@@ -176,6 +183,36 @@ def show_users(request, e=0):
         apache_port_num = int(ivi_ipv6_address[pos - 4: pos]) % 16 + 1024
         ivi_ipv4_address = '121.194.168.143:' + str(apache_port_num) + '/home/'
 
+    # calculate the connected users
+    show_pi = post_list[major_id - 1]
+    show_sons = []
+    show_son_id = []
+    id_counter = 0
+    show_parents = []
+    if show_pi.position.find('AP') != -1:
+        # get who is connected to it!
+        the_prefix = show_pi.prefix
+        for pis in post_list:
+            pis_prefix = str(IPNetwork(pis.global_ipv6_address + '/64').network)
+            if pis_prefix == the_prefix:
+                show_sons.append("<a href='/users/" + str(id_counter + 1) + "'>" + str(pis.global_ipv6_address) + '</a>')
+            id_counter = id_counter + 1
+
+    id_counter = 0
+    if show_pi.position.find('Client') != -1:
+        # who is your daddy?
+        # I am your father!
+        pis_prefix = str(IPNetwork(show_pi.global_ipv6_address + '/64').network)
+        for pis in post_list:
+            the_prefix = pis.prefix
+            if pis_prefix == the_prefix:
+                show_parents.append("<a href='/users/" + str(id_counter + 1) + "'>" + str(pis.global_ipv6_address) + '</a>')
+            id_counter = id_counter + 1
+    
+    if len(show_parents) == 0:
+        show_parents.append('None')
+
+
     return render(request, 'user.html',
                   {'post_list': post_list,
                       'empty_list': is_empty_list,
@@ -183,7 +220,9 @@ def show_users(request, e=0):
                       'show_pi': post_list[major_id - 1],
                       'show_all_addresses':
                           post_list[major_id - 1].ipv6_addresses.all(),
-                      'ivi_ipv4_address': ivi_ipv4_address}
+                      'ivi_ipv4_address': ivi_ipv4_address,
+                      'show_sons': show_sons,
+                      'show_parents': str(show_parents[0])}
                   )
 
 

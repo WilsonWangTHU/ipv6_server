@@ -20,7 +20,7 @@
         <div class="pure-u-3-4" style="font-family:courier;">
             <h4 class="email-subject">Raspberry {{forloop.counter}}</h4>
             <p class="email-desc">
-            The Raspberry Pi user with ID: {{ forloop.counter }} is now online.</p>
+            The Raspberry Pi user with ID: {{ forloop.counter }} is a <a>{{ post.position }}</a>.</p>
             <p class="email-desc">
             Mac Address: <a href='/users/{{forloop.counter}}'>{{ post.mac_address }}</a>.
             </p>
@@ -75,7 +75,7 @@
                     </tr>
                     </tbody>
                 </table>
-
+                <br>
                 <table class="pure-table pure-table-horizontal">
                     <thead>
                         <tr>
@@ -97,7 +97,7 @@
                 <table class="pure-table pure-table-bordered">
                     <thead>
                         <tr>
-                            <th>Heart Beat Frequency</th>
+                            <th>Connected to</th>
                             <th>Service Started From (UTC)</th>
                             <th>Last Service Was (UTC)</th>
                         </tr>
@@ -105,31 +105,34 @@
 
                     <tbody>
                     <tr>
-                        <td>{{show_pi.heart_beat_frequency}}</td>
+                        {% autoescape off %}
+                        <td>{{show_parents}}</td>
+                        {% endautoescape %}
                         <td>{{show_pi.service_start_time}}</td>
                         <td>{{show_pi.last_active_time}}</td>
                     </tr>
                     </tbody>
-                </table>
-
-                <br>
-                <table class="pure-table pure-table-horizontal">
+                </table> <br>
+                <table class="pure-table pure-table-bordered">
                     <thead>
                         <tr>
-                            <th>All IPv6 Addresses</th>
+                            <th>Current Connecting pi:</th>
                         </tr>
                     </thead>
 
                     <tbody>
-
-                    {% for add in show_all_addresses%}
+                        {% for pis in show_sons %}
                     <tr>
-                        <td>{{add.ipv6_address}}</td>
+                    {% autoescape off %}
+                        <td> {{ pis }}</td>
+                    {% endautoescape %}
                     </tr>
-                    {% endfor %}
-
+                        {% endfor %}
                     </tbody>
                 </table>
+
+
+                <br>
             {% endif %}
         </div>
     </div>
