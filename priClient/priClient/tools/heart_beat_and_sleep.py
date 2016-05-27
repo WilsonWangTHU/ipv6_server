@@ -46,4 +46,5 @@ while(True):
     data = response.read()
     isSuccess = (data.split('\n')[0] == 'success')
     print(data)
+    break
     time.sleep(10)

@@ -25,7 +25,7 @@ def heart_beat_ipv6(heart_beat_time, iface_name, port_num, target_host=0, test_m
         address_data = ''
         global_address = ''
         for address in ipv6_addresses:
-            if address.find('2001::') == -1:
+            if address.find('2001::') == -1 and address.find('/96') == -1:
                 global_address = address.replace('/64', '')
             address_data = address_data + address.replace('/64', '') + '\n'
 
@@ -34,13 +34,12 @@ def heart_beat_ipv6(heart_beat_time, iface_name, port_num, target_host=0, test_m
         data['mac_address'] = get_mac_address('wlan0')
         data['ipv6_addresses'] = address_data
         data['heart_beat_frequency'] = heart_beat_time
-        data['ivi_address'] = get_ivi_address('tap0')
+        data['ivi_address'] = get_ivi_address('eth0')
         data['position'] = 'AP'
         data['prefix'] = get_subnet_prefix('wlan0')  # it is important
         data_urlencode = urllib.urlencode(data)
 
         requrl = 'http://' + nms_address + ':' + str(port_num) + '/heart/'
-        return requrl
         req = urllib2.Request(url=requrl, data=data_urlencode)
         res_data = urllib2.urlopen(req)
         return res_data.read()

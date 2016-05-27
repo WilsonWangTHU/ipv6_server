@@ -157,7 +157,6 @@ def receive_heart_beat(request):
                            ivi_address=ivi_address,
                            prefix=prefix,
                            position=position)
-
     return HttpResponse('success\n')
 
 
@@ -180,8 +179,11 @@ def show_users(request, e=0):
         ivi_ipv4_address = 'None'
     else:
         pos = ivi_ipv6_address.find('::')
-        apache_port_num = int(ivi_ipv6_address[pos - 4: pos]) % 16 + 1024
-        ivi_ipv4_address = '121.194.168.143:' + str(apache_port_num) + '/home/'
+        apache_port_num = int(ivi_ipv6_address[pos - 4: pos], 16) % 16 + 1024
+        if post_list[major_id - 1].position == 'AP':
+            ivi_ipv4_address = '121.194.168.137:' + str(apache_port_num) + '/home/'
+        else:
+            ivi_ipv4_address = '121.194.168.143:' + str(apache_port_num) + '/home/'
 
     # calculate the connected users
     show_pi = post_list[major_id - 1]

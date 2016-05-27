@@ -18,7 +18,6 @@ def set_second_ivi_route(target_address, target_via, iface_name):
     router_address = router_address.communicate()[0].split(' ')[2]
 
     # add the needed route table on this machine
-    subprocess.Popen('sudo ip -6 route del ' + target_address, shell=True)
     subprocess.Popen('sudo ip -6 route add ' + target_address + ' via ' + router_address + ' dev ' + iface_name, shell=True)
 
     if my_next_prefix != target_via_prefix:

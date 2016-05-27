@@ -21,8 +21,6 @@ class client_info(models.Model):
     prefix = models.CharField(max_length=100, default='None')
     position = models.CharField(max_length=100, default='Unknown')
     life = models.CharField(max_length=100, default='Active')
-    class Meta:
-        ordering = ['position']
     # TODO LIST:
     # permission_granted_time = models.DateTimeField()
 
